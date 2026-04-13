@@ -37,7 +37,7 @@ export function LoginForm({
         });
         if (response?.ok) {
           success("Logged in successfully");
-          router.push("/");
+          router.push("/rental");
         } else {
           console.error("Login error:", response);
           throw response?.error || "Login failed";

@@ -1,11 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { NavUser } from "@/components/user/nav-user";
+import { NavUser } from "@/components/layout/nav-user";
 import {
   Sidebar as SidebarComponent,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -19,7 +18,7 @@ import {
 import { SearchBar } from "@/components/common/search-bar";
 import { SidebarData, SidebarItem } from "./config";
 import { useRouter } from "next/navigation";
-import { User } from "@/types";
+import { User } from "@/lib/api/resource/user";
 import Link from "next/link";
 import {
   CollapsibleContent,
@@ -128,11 +127,6 @@ export function Sidebar({
           );
         })}
       </SidebarContent>
-      <SidebarFooter>
-        <div className="rounded-md shadow-md p-2 bg-white">
-          <p className="text-xs">Basudeva App</p>
-        </div>
-      </SidebarFooter>
     </SidebarComponent>
   );
 }

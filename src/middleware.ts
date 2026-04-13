@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   if (!token && !authRoutes.includes(pathname)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
-  const protectedRoutes = ["/", "/profile", "/settings", "/projects"];
+  const protectedRoutes = ["/rental", "/profile", "/settings", "/projects"];
   const isProtectedRoute = protectedRoutes.includes(pathname);
   if (isProtectedRoute && !token) {
     const loginUrl = new URL("/login", request.url);
@@ -21,12 +21,12 @@ export async function middleware(request: NextRequest) {
 
   const isAuthRoute = authRoutes.includes(pathname);
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/rental", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/(dashboard)/:path*", "/login", "/register"],
+  matcher: ["/rental", "/(dashboard)/:path*", "/login", "/register"],
 };

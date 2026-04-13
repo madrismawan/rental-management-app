@@ -59,15 +59,6 @@ export function Sidebar({
             }}
           />
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/">
-                <span>Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarGroup>
         {Object.keys(SidebarData).map((key) => {
           return (
             <SidebarGroup
@@ -126,11 +117,6 @@ export function Sidebar({
           );
         })}
       </SidebarContent>
-      <SidebarFooter>
-        <div className="rounded-md shadow-md p-2 bg-white">
-          <p className="text-xs">Basudeva App</p>
-        </div>
-      </SidebarFooter>
     </SidebarComponent>
   );
 }
