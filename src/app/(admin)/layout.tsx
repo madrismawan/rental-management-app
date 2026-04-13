@@ -6,25 +6,38 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLoading from "./loading";
 import { useSession } from "next-auth/react";
 import { User } from "@/lib/api/resource/user";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const router = useRouter();
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
+
   if (status === "loading") {
     return <DashboardLoading />;
   }
-  if (status === "unauthenticated") {
-    return <div>Please sign in</div>;
+
+  if (status !== "authenticated" || !session?.user) {
+    return <DashboardLoading />;
   }
 
   const user: User = {
-    id: session!.user.id,
-    name: session!.user.name || "No Name",
-    email: session!.user.email || "",
-    role: session!.user.role || "user",
+    id: session.user.id,
+    name: session.user.name || "No Name",
+    email: session.user.email || "",
+    role: session.user.role || "user",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   return (
