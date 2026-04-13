@@ -59,9 +59,14 @@ export default function RentalDetailPage() {
             View rental information.
           </p>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/rental">Back</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/rental">Back</Link>
+          </Button>
+          <Button asChild>
+            <Link href={`/rental/${rental.id}/edit`}>Update</Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-3 rounded-lg border p-4 text-sm">

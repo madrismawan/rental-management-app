@@ -19,7 +19,15 @@ const formatDate = (value: Date | string | undefined) => {
   return date.toLocaleDateString();
 };
 
-export const rentalColumns: ColumnDef<Rental>[] = [
+interface RentalColumnOptions {
+  onDelete: (rental: Rental) => void;
+  deletingId?: number | null;
+}
+
+export const getRentalColumns = ({
+  onDelete,
+  deletingId,
+}: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -59,6 +67,7 @@ export const rentalColumns: ColumnDef<Rental>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const rental = row.original;
+      const isDeleting = deletingId === rental.id;
 
       return (
         <DropdownMenu>
@@ -75,6 +84,16 @@ export const rentalColumns: ColumnDef<Rental>[] = [
           <DropdownMenuContent align="end" className="w-36">
             <DropdownMenuItem asChild>
               <Link href={`/rental/${rental.id}`}>Detail</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/rental/${rental.id}/edit`}>Update</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              disabled={isDeleting}
+              onClick={() => onDelete(rental)}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

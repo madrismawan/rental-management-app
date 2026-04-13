@@ -130,6 +130,7 @@ export function VehicleForm({
             id="plateNumber"
             value={formValues.plateNumber}
             onChange={(e) => onChange("plateNumber", e.target.value)}
+            placeholder="B 1234 XYZ"
             required
           />
         </div>
@@ -141,6 +142,7 @@ export function VehicleForm({
               id="brand"
               value={formValues.brand}
               onChange={(e) => onChange("brand", e.target.value)}
+              placeholder="Toyota"
               required
             />
           </div>
@@ -150,6 +152,7 @@ export function VehicleForm({
               id="model"
               value={formValues.model}
               onChange={(e) => onChange("model", e.target.value)}
+              placeholder="Avanza"
               required
             />
           </div>
@@ -162,6 +165,7 @@ export function VehicleForm({
               id="color"
               value={formValues.color}
               onChange={(e) => onChange("color", e.target.value)}
+              placeholder="Black"
               required
             />
           </div>
@@ -171,6 +175,7 @@ export function VehicleForm({
               id="status"
               value={formValues.status}
               onChange={(e) => onChange("status", e.target.value)}
+              placeholder="available"
               required
             />
           </div>
@@ -184,6 +189,7 @@ export function VehicleForm({
               type="number"
               value={formValues.cc}
               onChange={(e) => onChange("cc", e.target.value)}
+              placeholder="1500"
               required
             />
           </div>
@@ -194,6 +200,7 @@ export function VehicleForm({
               type="number"
               value={formValues.year}
               onChange={(e) => onChange("year", e.target.value)}
+              placeholder="2023"
               required
             />
           </div>
@@ -207,6 +214,7 @@ export function VehicleForm({
               type="number"
               value={formValues.mileage}
               onChange={(e) => onChange("mileage", e.target.value)}
+              placeholder="12000"
               required
             />
           </div>
@@ -217,6 +225,7 @@ export function VehicleForm({
               type="number"
               value={formValues.dailyRate}
               onChange={(e) => onChange("dailyRate", e.target.value)}
+              placeholder="350000"
               required
             />
           </div>
@@ -228,6 +237,7 @@ export function VehicleForm({
             id="notes"
             value={formValues.notes}
             onChange={(e) => onChange("notes", e.target.value)}
+            placeholder="Vehicle notes"
             required
           />
         </div>

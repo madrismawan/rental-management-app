@@ -133,6 +133,7 @@ export function VehicleIncidentForm({
               type="number"
               value={formValues.vehicleId}
               onChange={(e) => onChange("vehicleId", e.target.value)}
+              placeholder="1"
               required
             />
           </div>
@@ -143,6 +144,7 @@ export function VehicleIncidentForm({
               type="date"
               value={formValues.incidentDate}
               onChange={(e) => onChange("incidentDate", e.target.value)}
+              placeholder="YYYY-MM-DD"
               required
             />
           </div>
@@ -156,6 +158,7 @@ export function VehicleIncidentForm({
               type="number"
               value={formValues.customerId}
               onChange={(e) => onChange("customerId", e.target.value)}
+              placeholder="1"
             />
           </div>
           <div className="grid gap-2">
@@ -165,6 +168,7 @@ export function VehicleIncidentForm({
               type="number"
               value={formValues.rentalId}
               onChange={(e) => onChange("rentalId", e.target.value)}
+              placeholder="1"
             />
           </div>
         </div>
@@ -175,6 +179,7 @@ export function VehicleIncidentForm({
             id="incidentType"
             value={formValues.incidentType}
             onChange={(e) => onChange("incidentType", e.target.value)}
+            placeholder="Scratch"
             required
           />
         </div>
@@ -185,6 +190,7 @@ export function VehicleIncidentForm({
             id="description"
             value={formValues.description}
             onChange={(e) => onChange("description", e.target.value)}
+            placeholder="Describe the incident"
             required
           />
         </div>
@@ -197,6 +203,7 @@ export function VehicleIncidentForm({
               type="number"
               value={formValues.penaltyFee}
               onChange={(e) => onChange("penaltyFee", e.target.value)}
+              placeholder="500000"
               required
             />
           </div>
@@ -206,6 +213,7 @@ export function VehicleIncidentForm({
               id="status"
               value={formValues.status}
               onChange={(e) => onChange("status", e.target.value)}
+              placeholder="pending"
               required
             />
           </div>
