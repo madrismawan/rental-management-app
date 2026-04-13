@@ -3,9 +3,12 @@
 import { LoginForm } from "@/app/(auth)/login/components/login-form";
 import { setDocumentTitle } from "@/lib/utils";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function LoginPage() {
-  setDocumentTitle("Login");
+  useEffect(() => {
+    setDocumentTitle("Login");
+  }, []);
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">

@@ -6,8 +6,41 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardLoading from "./loading";
 import { useSession } from "next-auth/react";
 import { User } from "@/lib/api/resource/user";
-import { useRouter } from "next/navigation";
+import { setDocumentTitle } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+const getAdminPageTitle = (pathname: string) => {
+  if (pathname.startsWith("/vehicle-incident")) {
+    if (pathname.endsWith("/create")) return "Vehicle Incident Create";
+    if (pathname.endsWith("/edit")) return "Vehicle Incident Edit";
+    if (pathname !== "/vehicle-incident") return "Vehicle Incident Detail";
+    return "Vehicle Incident";
+  }
+
+  if (pathname.startsWith("/vehicle")) {
+    if (pathname.endsWith("/create")) return "Vehicle Create";
+    if (pathname.endsWith("/edit")) return "Vehicle Edit";
+    if (pathname !== "/vehicle") return "Vehicle Detail";
+    return "Vehicle";
+  }
+
+  if (pathname.startsWith("/customer")) {
+    if (pathname.endsWith("/create")) return "Customer Create";
+    if (pathname.endsWith("/edit")) return "Customer Edit";
+    if (pathname !== "/customer") return "Customer Detail";
+    return "Customer";
+  }
+
+  if (pathname.startsWith("/rental")) {
+    if (pathname.endsWith("/create")) return "Rental Create";
+    if (pathname.endsWith("/edit")) return "Rental Edit";
+    if (pathname !== "/rental") return "Rental Detail";
+    return "Rental";
+  }
+
+  return "Dashboard";
+};
 
 export default function AdminLayout({
   children,
@@ -15,7 +48,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    setDocumentTitle(getAdminPageTitle(pathname));
+  }, [pathname]);
 
   useEffect(() => {
     if (status === "unauthenticated") {
