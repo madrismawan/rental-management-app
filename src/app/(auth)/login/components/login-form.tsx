@@ -34,18 +34,16 @@ export function LoginForm({
           email: value.email,
           password: value.password,
           redirect: false,
-          callbackUrl: "/dashboard",
         });
-
         if (response?.ok) {
           success("Logged in successfully");
-          router.push(response.url ?? "/dashboard");
+          router.push(response.url ?? "/");
         } else {
           throw response?.error || "Login failed";
         }
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : String(err);
-        ErrorToast(message || "Login failed");
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+      } catch (error: any) {
+        ErrorToast(error || "Login failed");
       }
     },
   });

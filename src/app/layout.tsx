@@ -1,6 +1,7 @@
 import { Geist, Inter } from "next/font/google";
 import "@/style/globals.css";
 import { cn } from "@/lib/utils";
+import { ToastProvider } from "@/providers/toast-provider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -19,7 +20,10 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico"></link>
       </head>
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+      <body className={`${inter.variable} antialiased`}>
+        {children}
+        <ToastProvider />
+      </body>
     </html>
   );
 }

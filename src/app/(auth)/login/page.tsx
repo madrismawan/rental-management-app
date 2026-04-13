@@ -1,9 +1,12 @@
 "use client";
 
 import { LoginForm } from "@/app/(auth)/login/components/login-form";
+import { setDocumentTitle } from "@/lib/utils";
 import Image from "next/image";
 
 export default function LoginPage() {
+  setDocumentTitle("Login");
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
