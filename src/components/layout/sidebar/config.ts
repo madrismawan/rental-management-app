@@ -25,8 +25,8 @@ const sidebarTransaction: SidebarItem[] = [
     icon: IconCashRegister,
   },
   {
-    title: "Maintenance",
-    url: "/maintenance",
+    title: "Vehicle Incident",
+    url: "/vehicle-incident",
     icon: IconContract,
   },
 ];
