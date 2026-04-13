@@ -62,7 +62,6 @@ export class ApiClient {
         );
       }
 
-      // Case: HTTP status error OR API response error
       if (!res.ok || json.success === false) {
         return camelcaseKeys(
           {
@@ -76,8 +75,6 @@ export class ApiClient {
           { deep: true },
         );
       }
-
-      // SUCCESS
 
       return camelcaseKeys(
         {

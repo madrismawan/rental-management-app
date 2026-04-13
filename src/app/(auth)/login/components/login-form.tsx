@@ -37,12 +37,14 @@ export function LoginForm({
         });
         if (response?.ok) {
           success("Logged in successfully");
-          router.push(response.url ?? "/");
+          router.push("/");
         } else {
+          console.error("Login error:", response);
           throw response?.error || "Login failed";
         }
         /* eslint-disable @typescript-eslint/no-explicit-any */
       } catch (error: any) {
+        console.error("Login error:", error);
         ErrorToast(error || "Login failed");
       }
     },

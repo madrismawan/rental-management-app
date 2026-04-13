@@ -5,7 +5,7 @@ import { signOut } from "@/lib/auth";
 
 export const authAPI = {
   login: async (input: LoginInput) => {
-    return await apiClient.post<LoginResponse>("/auth/login", { body: input });
+    return await apiClient.post<LoginResponse>("/auth/login", input);
   },
   logout: async (): Promise<{ success: boolean }> => {
     await signOut({ redirect: true, callbackUrl: "/login" });

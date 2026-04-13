@@ -25,8 +25,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/lib/auth";
 import { User } from "@/lib/api/resource/user";
+import { signOut } from "next-auth/react";
 
 interface NavUserProps {
   user: User;
@@ -35,10 +35,9 @@ interface NavUserProps {
 
 export function NavUser({ className, user }: NavUserProps) {
   const { isMobile } = useSidebar();
-  const { logout } = useAuth();
 
   const handleLogout = async () => {
-    await logout();
+    await signOut({ redirect: false });
   };
 
   return (
