@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { customerAPI } from "@/lib/api/endpoints/customer";
 import { Customer } from "@/lib/api/resource/customer";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -63,45 +64,53 @@ export default function CustomerDetailPage() {
         </div>
       </div>
 
-      <div className="grid gap-3 rounded-lg border p-4 text-sm">
-        <p>
-          <span className="font-medium">ID:</span> {customer.id}
-        </p>
-        <p>
-          <span className="font-medium">User ID:</span> {customer.userId}
-        </p>
-        <p>
-          <span className="font-medium">Name:</span> {customer.name}
-        </p>
-        <p>
-          <span className="font-medium">Email:</span> {customer.email}
-        </p>
-        <p>
-          <span className="font-medium">Phone Number:</span>{" "}
-          {customer.phoneNumber}
-        </p>
-        <p>
-          <span className="font-medium">Address:</span> {customer.address}
-        </p>
-        <p>
-          <span className="font-medium">Avatar:</span>{" "}
-          <a
-            href={customer.avatarUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary hover:underline"
-          >
-            {customer.avatarUrl}
-          </a>
-        </p>
-        <p>
-          <span className="font-medium">Created At:</span>{" "}
-          {formatDate(customer.createdAt)}
-        </p>
-        <p>
-          <span className="font-medium">Updated At:</span>{" "}
-          {formatDate(customer.updatedAt)}
-        </p>
+      <div className="grid grid-cols-2 gap-3 rounded-lg border p-4 text-sm">
+        <div className="grid gap-3">
+          <p>
+            <span className="font-medium">ID:</span> {customer.id}
+          </p>
+          <p>
+            <span className="font-medium">User ID:</span> {customer.userId}
+          </p>
+          <p>
+            <span className="font-medium">Name:</span> {customer.name}
+          </p>
+          <p>
+            <span className="font-medium">Email:</span> {customer.email}
+          </p>
+          <p>
+            <span className="font-medium">Phone Number:</span>{" "}
+            {customer.phoneNumber}
+          </p>
+          <p>
+            <span className="font-medium">Address:</span> {customer.address}
+          </p>
+          <p>
+            <span className="font-medium">Created At:</span>{" "}
+            {formatDate(customer.createdAt)}
+          </p>
+          <p>
+            <span className="font-medium">Updated At:</span>{" "}
+            {formatDate(customer.updatedAt)}
+          </p>
+        </div>
+        <div>
+          <p>
+            <span className="font-medium">Avatar:</span>{" "}
+            {customer.avatarUrl ? (
+              <Image
+                src={customer.avatarUrl}
+                alt={customer.name}
+                unoptimized
+                width={50}
+                height={50}
+                className="h-52 w-auto rounded-md object-cover border"
+              />
+            ) : (
+              <span className="text-muted-foreground text-xs">No image</span>
+            )}
+          </p>
+        </div>
       </div>
     </section>
   );

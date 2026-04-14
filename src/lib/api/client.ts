@@ -7,6 +7,10 @@ import { ApiResponse } from "./types";
 export class ApiClient {
   constructor(private baseURL: string) {}
 
+  private isFormDataBody(body: unknown): body is FormData {
+    return typeof FormData !== "undefined" && body instanceof FormData;
+  }
+
   private async safeJsonParse(res: Response) {
     try {
       return await res.json();
@@ -32,11 +36,12 @@ export class ApiClient {
   ): Promise<ApiResponse<T>> {
     const token = await this.getAuthToken();
     const url = `${this.baseURL}${endpoint}`;
+    const isFormData = this.isFormDataBody(options.body);
 
     const config: RequestInit = {
       method: options.method || "GET",
       headers: {
-        "Content-Type": "application/json",
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...(options.headers || {}),
       },
@@ -111,11 +116,15 @@ export class ApiClient {
     data?: any,
     options?: RequestInit,
   ): Promise<ApiResponse<T>> {
+    const isFormData = this.isFormDataBody(data);
+
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",
       body: data
-        ? JSON.stringify(snakecaseKeys(data, { deep: true }))
+        ? isFormData
+          ? data
+          : JSON.stringify(snakecaseKeys(data, { deep: true }))
         : undefined,
     });
   }
@@ -126,11 +135,15 @@ export class ApiClient {
     data?: any,
     options?: RequestInit,
   ): Promise<ApiResponse<T>> {
+    const isFormData = this.isFormDataBody(data);
+
     return this.request<T>(endpoint, {
       ...options,
       method: "PUT",
       body: data
-        ? JSON.stringify(snakecaseKeys(data, { deep: true }))
+        ? isFormData
+          ? data
+          : JSON.stringify(snakecaseKeys(data, { deep: true }))
         : undefined,
     });
   }

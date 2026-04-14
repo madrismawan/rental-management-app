@@ -30,11 +30,11 @@ export const customerAPI = {
     return await apiClient.get<Customer>(`/customers/${id}`);
   },
 
-  create: async (input: CreateCustomerInput) => {
+  create: async (input: CreateCustomerInput | FormData) => {
     return await apiClient.post<Customer>("/customers", input);
   },
 
-  update: async (id: string, input: UpdateCustomerInput) => {
+  update: async (id: string, input: UpdateCustomerInput | FormData) => {
     return await apiClient.put<Customer>(`/customers/${id}`, input);
   },
 

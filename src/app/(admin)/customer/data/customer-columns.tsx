@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Customer } from "@/lib/api/resource/customer";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -51,16 +52,19 @@ export const getCustomerColumns = ({
   {
     accessorKey: "avatarUrl",
     header: "Avatar",
-    cell: ({ row }) => (
-      <a
-        href={row.original.avatarUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="text-primary hover:underline"
-      >
-        View
-      </a>
-    ),
+    cell: ({ row }) =>
+      row.original.avatarUrl ? (
+        <Image
+          src={row.original.avatarUrl}
+          alt={row.original.name}
+          unoptimized
+          width={40}
+          height={40}
+          className="h-10 w-10 rounded-md object-cover border"
+        />
+      ) : (
+        <span className="text-muted-foreground text-xs">No image</span>
+      ),
   },
   {
     accessorKey: "createdAt",

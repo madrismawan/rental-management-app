@@ -5,10 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { customerAPI } from "@/lib/api/endpoints/customer";
-import {
-  CreateCustomerInput,
-  UpdateCustomerInput,
-} from "@/lib/schema/customer";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -43,6 +40,10 @@ export function CustomerForm({
     address: initialValues?.address ?? "",
     avatarUrl: initialValues?.avatarUrl ?? "",
   });
+  const [avatarPreview, setAvatarPreview] = useState(
+    initialValues?.avatarUrl ?? "",
+  );
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const { success, error } = useToast();
   const router = useRouter();
@@ -59,22 +60,41 @@ export function CustomerForm({
     setFormValues((prev) => ({ ...prev, [field]: value }));
   };
 
+  const onAvatarChange = (file?: File) => {
+    if (!file) return;
+
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+
+  const buildFormData = () => {
+    const data = new FormData();
+
+    data.append("id", formValues.id);
+    data.append("name", formValues.name);
+    data.append("email", formValues.email);
+
+    if (formValues.password) {
+      data.append("password", formValues.password);
+    }
+
+    data.append("phone_number", formValues.phoneNumber);
+    data.append("address", formValues.address);
+
+    if (avatarFile) {
+      data.append("avatar", avatarFile);
+    }
+
+    return data;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setSubmitting(true);
 
     if (mode === "create") {
-      const payload: CreateCustomerInput = {
-        id: formValues.id,
-        name: formValues.name,
-        email: formValues.email,
-        password: formValues.password,
-        phoneNumber: formValues.phoneNumber,
-        address: formValues.address,
-        avatarUrl: formValues.avatarUrl,
-      };
-
+      const payload = buildFormData();
       const res = await customerAPI.create(payload);
       if (res.success) {
         success("Customer created successfully");
@@ -92,16 +112,7 @@ export function CustomerForm({
       return;
     }
 
-    const payload: UpdateCustomerInput = {
-      id: formValues.id,
-      name: formValues.name,
-      email: formValues.email,
-      password: formValues.password,
-      phoneNumber: formValues.phoneNumber,
-      address: formValues.address,
-      avatarUrl: formValues.avatarUrl,
-    };
-
+    const payload = buildFormData();
     const res = await customerAPI.update(customerId, payload);
     if (res.success) {
       success("Customer updated successfully");
@@ -186,15 +197,24 @@ export function CustomerForm({
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="avatarUrl">Avatar URL</Label>
+          <Label htmlFor="avatar">Avatar</Label>
           <Input
-            id="avatarUrl"
-            type="url"
-            value={formValues.avatarUrl}
-            onChange={(e) => onChange("avatarUrl", e.target.value)}
-            placeholder="https://example.com/avatar.jpg"
-            required
+            id="avatar"
+            type="file"
+            accept="image/*"
+            onChange={(e) => onAvatarChange(e.target.files?.[0])}
+            required={mode === "create" && !formValues.avatarUrl}
           />
+          {avatarPreview && (
+            <Image
+              src={avatarPreview}
+              alt="Avatar preview"
+              unoptimized
+              width={80}
+              height={80}
+              className="h-20 w-20 rounded-md object-cover border"
+            />
+          )}
         </div>
 
         <div className="flex items-center gap-2">
