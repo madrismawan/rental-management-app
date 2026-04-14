@@ -2,9 +2,25 @@ import { CreateVehicleInput, UpdateVehicleInput } from "@/lib/schema/vehicle";
 import { apiClient } from "../client";
 import { Vehicle } from "../resource/vehicle";
 
+type VehicleQuery = {
+  page?: number;
+  limit?: number;
+};
+
+const toQueryString = (query?: VehicleQuery) => {
+  if (!query) return "";
+
+  const params = new URLSearchParams();
+  if (query.page !== undefined) params.set("page", String(query.page));
+  if (query.limit !== undefined) params.set("limit", String(query.limit));
+
+  const parsed = params.toString();
+  return parsed ? `?${parsed}` : "";
+};
+
 export const vehicleAPI = {
-  getAll: async () => {
-    return await apiClient.get<Vehicle[]>(`/vehicles`);
+  getAll: async (query?: VehicleQuery) => {
+    return await apiClient.get<Vehicle[]>(`/vehicles${toQueryString(query)}`);
   },
 
   getById: async (id: number) => {

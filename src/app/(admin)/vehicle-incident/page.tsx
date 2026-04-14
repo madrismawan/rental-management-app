@@ -7,25 +7,57 @@ import { useEffect, useState } from "react";
 import { getVehicleIncidentColumns } from "./data/vehicle-incident-columns";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { PaginationState } from "@tanstack/react-table";
+import { normalizePaginationMeta, PaginationMeta } from "@/lib/api/pagination";
 
 export default function VehicleIncidentPage() {
   const [incidents, setIncidents] = useState<VehicleIncident[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [pageCount, setPageCount] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const { success, error } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     const fetchIncidents = async () => {
-      const res = await vehicleIncidentAPI.getAll();
+      setLoading(true);
+
+      const res = await vehicleIncidentAPI.getAll({
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+      });
+
       if (res.success && res.data) {
         setIncidents(res.data);
       }
+
+      const { totalPages } = normalizePaginationMeta(
+        (res.meta as PaginationMeta) ?? {
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          total: 0,
+          totalPages: 1,
+        },
+      );
+
+      setPageCount(totalPages);
+
+      if (pagination.pageIndex > totalPages - 1) {
+        setPagination((prev) => ({
+          ...prev,
+          pageIndex: Math.max(totalPages - 1, 0),
+        }));
+      }
+
       setLoading(false);
     };
 
     fetchIncidents();
-  }, []);
+  }, [pagination.pageIndex, pagination.pageSize]);
 
   const handleDelete = async (incident: VehicleIncident) => {
     const confirmed = window.confirm(
@@ -62,6 +94,10 @@ export default function VehicleIncidentPage() {
         data={incidents}
         filterSearchKey={["id", "vehicleId", "incidentType", "status"]}
         onCreateRow={() => router.push("/vehicle-incident/create")}
+        manualPagination
+        pageCount={pageCount}
+        paginationState={pagination}
+        onPaginationChange={setPagination}
       />
       {loading && <p className="text-sm text-muted-foreground">Loading...</p>}
     </section>

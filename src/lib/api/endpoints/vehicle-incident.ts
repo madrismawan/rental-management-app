@@ -5,9 +5,27 @@ import {
 import { apiClient } from "../client";
 import { VehicleIncident } from "../resource/vehicle-incident";
 
+type VehicleIncidentQuery = {
+  page?: number;
+  limit?: number;
+};
+
+const toQueryString = (query?: VehicleIncidentQuery) => {
+  if (!query) return "";
+
+  const params = new URLSearchParams();
+  if (query.page !== undefined) params.set("page", String(query.page));
+  if (query.limit !== undefined) params.set("limit", String(query.limit));
+
+  const parsed = params.toString();
+  return parsed ? `?${parsed}` : "";
+};
+
 export const vehicleIncidentAPI = {
-  getAll: async () => {
-    return await apiClient.get<VehicleIncident[]>("/vehicle-incidents");
+  getAll: async (query?: VehicleIncidentQuery) => {
+    return await apiClient.get<VehicleIncident[]>(
+      `/vehicle-incidents${toQueryString(query)}`,
+    );
   },
 
   getById: async (id: number) => {

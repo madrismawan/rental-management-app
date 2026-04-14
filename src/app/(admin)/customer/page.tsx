@@ -34,10 +34,14 @@ export default function CustomerPage() {
       if (res.success && res.data) {
         setCustomers(res.data);
       }
-      console.log("ini meta", res.meta);
 
       const { totalPages } = normalizePaginationMeta(
-        res.meta as PaginationMeta,
+        (res.meta as PaginationMeta) ?? {
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          total: 0,
+          totalPages: 1,
+        },
       );
 
       setPageCount(totalPages);

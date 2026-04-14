@@ -2,9 +2,25 @@ import { CreateRentalInput, UpdateRentalInput } from "@/lib/schema/rental";
 import { apiClient } from "../client";
 import { Rental } from "../resource/rental";
 
+type RentalQuery = {
+  page?: number;
+  limit?: number;
+};
+
+const toQueryString = (query?: RentalQuery) => {
+  if (!query) return "";
+
+  const params = new URLSearchParams();
+  if (query.page !== undefined) params.set("page", String(query.page));
+  if (query.limit !== undefined) params.set("limit", String(query.limit));
+
+  const parsed = params.toString();
+  return parsed ? `?${parsed}` : "";
+};
+
 export const rentalAPI = {
-  getAll: async () => {
-    return await apiClient.get<Rental[]>(`/rentals`);
+  getAll: async (query?: RentalQuery) => {
+    return await apiClient.get<Rental[]>(`/rentals${toQueryString(query)}`);
   },
 
   getById: async (id: number) => {
