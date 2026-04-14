@@ -149,7 +149,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.customerId}
               onChange={(e) => onChange("customerId", e.target.value)}
-              placeholder="1"
               required
             />
           </div>
@@ -160,7 +159,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.vehicleId}
               onChange={(e) => onChange("vehicleId", e.target.value)}
-              placeholder="1"
               required
             />
           </div>
@@ -174,7 +172,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="date"
               value={formValues.startDate}
               onChange={(e) => onChange("startDate", e.target.value)}
-              placeholder="YYYY-MM-DD"
               required
             />
           </div>
@@ -185,7 +182,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="date"
               value={formValues.endDate}
               onChange={(e) => onChange("endDate", e.target.value)}
-              placeholder="YYYY-MM-DD"
               required
             />
           </div>
@@ -196,7 +192,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="date"
               value={formValues.returnDate}
               onChange={(e) => onChange("returnDate", e.target.value)}
-              placeholder="YYYY-MM-DD"
             />
           </div>
         </div>
@@ -209,7 +204,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.totalDay}
               onChange={(e) => onChange("totalDay", e.target.value)}
-              placeholder="3"
               required
             />
           </div>
@@ -220,7 +214,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.price}
               onChange={(e) => onChange("price", e.target.value)}
-              placeholder="1000000"
               required
             />
           </div>
@@ -231,7 +224,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.penaltyFee}
               onChange={(e) => onChange("penaltyFee", e.target.value)}
-              placeholder="0"
               required
             />
           </div>
@@ -245,7 +237,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.subtotal}
               onChange={(e) => onChange("subtotal", e.target.value)}
-              placeholder="1000000"
               required
             />
           </div>
@@ -255,7 +246,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               id="status"
               value={formValues.status}
               onChange={(e) => onChange("status", e.target.value)}
-              placeholder="ongoing"
               required
             />
           </div>
@@ -272,7 +262,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               onChange={(e) =>
                 onChange("vehicleConditionStart", e.target.value)
               }
-              placeholder="Good"
               required
             />
           </div>
@@ -282,7 +271,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               id="vehicleConditionEnd"
               value={formValues.vehicleConditionEnd}
               onChange={(e) => onChange("vehicleConditionEnd", e.target.value)}
-              placeholder="Good"
               required
             />
           </div>
@@ -296,7 +284,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.mileageStart}
               onChange={(e) => onChange("mileageStart", e.target.value)}
-              placeholder="12000"
               required
             />
           </div>
@@ -307,7 +294,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.mileageUsed}
               onChange={(e) => onChange("mileageUsed", e.target.value)}
-              placeholder="150"
               required
             />
           </div>
@@ -318,7 +304,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               type="number"
               value={formValues.mileageEnd}
               onChange={(e) => onChange("mileageEnd", e.target.value)}
-              placeholder="12150"
               required
             />
           </div>
@@ -330,7 +315,6 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
             id="notes"
             value={formValues.notes}
             onChange={(e) => onChange("notes", e.target.value)}
-            placeholder="Rental notes"
             required
           />
         </div>

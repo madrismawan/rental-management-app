@@ -4,7 +4,7 @@ import { SelectOptions } from "@/components/common/select-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AVAILABLE, UNAVAILABLE } from "@/constants/status";
+import { AVAILABLE, RENT, UNAVAILABLE } from "@/constants/status";
 import { useToast } from "@/hooks/use-toast";
 import { vehicleAPI } from "@/lib/api/endpoints/vehicle";
 import { CreateVehicleInput, UpdateVehicleInput } from "@/lib/schema/vehicle";
@@ -177,6 +177,7 @@ export function VehicleForm({
               options={[
                 { label: "Available", value: AVAILABLE },
                 { label: "Unavailable", value: UNAVAILABLE },
+                { label: "Rent", value: RENT },
               ]}
               value={formValues.status}
               onChange={(value) => onChange("status", value as string)}

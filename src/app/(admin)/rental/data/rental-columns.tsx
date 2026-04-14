@@ -29,13 +29,6 @@ export const getRentalColumns = ({
   deletingId,
 }: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.id}</span>
-    ),
-  },
-  {
     accessorKey: "customerId",
     header: "Customer ID",
   },

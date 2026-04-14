@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Vehicle } from "@/lib/api/resource/vehicle";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,13 +29,6 @@ export const getVehicleColumns = ({
   deletingId,
 }: VehicleColumnOptions): ColumnDef<Vehicle>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.id}</span>
-    ),
-  },
-  {
     accessorKey: "plateNumber",
     header: "Plate Number",
   },
@@ -54,6 +48,22 @@ export const getVehicleColumns = ({
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const normalizedStatus = row.original.status.toLowerCase();
+      return (
+        <Badge
+          variant={
+            normalizedStatus === "available"
+              ? "default"
+              : normalizedStatus === "rent"
+                ? "outline"
+                : "destructive"
+          }
+        >
+          {row.original.status}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
