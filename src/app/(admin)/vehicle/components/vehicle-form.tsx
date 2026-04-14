@@ -1,8 +1,10 @@
 "use client";
 
+import { SelectOptions } from "@/components/common/select-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AVAILABLE, UNAVAILABLE } from "@/constants/status";
 import { useToast } from "@/hooks/use-toast";
 import { vehicleAPI } from "@/lib/api/endpoints/vehicle";
 import { CreateVehicleInput, UpdateVehicleInput } from "@/lib/schema/vehicle";
@@ -171,12 +173,14 @@ export function VehicleForm({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="status">Status</Label>
-            <Input
-              id="status"
+            <SelectOptions
+              options={[
+                { label: "Available", value: AVAILABLE },
+                { label: "Unavailable", value: UNAVAILABLE },
+              ]}
               value={formValues.status}
-              onChange={(e) => onChange("status", e.target.value)}
-              placeholder="available"
-              required
+              onChange={(value) => onChange("status", value as string)}
+              placeholder="Select status"
             />
           </div>
         </div>
