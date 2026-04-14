@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { customerAPI } from "@/lib/api/endpoints/customer";
 import { rentalAPI } from "@/lib/api/endpoints/rental";
 import { vehicleAPI } from "@/lib/api/endpoints/vehicle";
 import { Options } from "@/lib/api/types";
@@ -13,6 +14,7 @@ import { CreateRentalInput, UpdateRentalInput } from "@/lib/schema/rental";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { calculateTotalDays } from "@/lib/date";
 
 interface RentalFormValues {
   customerId: string;
@@ -39,6 +41,14 @@ interface RentalFormProps {
   initialValues?: Partial<RentalFormValues>;
 }
 
+interface VehicleOptionItem {
+  id: number;
+  name: string;
+  dailyRate: number;
+  mileage: number;
+  condition: string;
+}
+
 export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
   const [formValues, setFormValues] = useState<RentalFormValues>({
     customerId: initialValues?.customerId ?? "",
@@ -60,7 +70,11 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
   });
 
   const [submitting, setSubmitting] = useState(false);
+  const [customerOptions, setCustomerOptions] = useState<Options[]>([]);
   const [vehicleOptions, setVehicleOptions] = useState<Options[]>([]);
+  const [vehicleOptionData, setVehicleOptionData] = useState<
+    VehicleOptionItem[]
+  >([]);
   const { success, error } = useToast();
   const router = useRouter();
 
@@ -75,10 +89,42 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
     setFormValues((prev) => ({ ...prev, [field]: value }));
   };
 
+  const onVehicleChange = (value: string) => {
+    const selectedVehicle = vehicleOptionData.find(
+      (item) => String(item.id) === value,
+    );
+
+    setFormValues((prev) => ({
+      ...prev,
+      vehicleId: value,
+      price: selectedVehicle ? String(selectedVehicle.dailyRate) : prev.price,
+      mileageStart: selectedVehicle
+        ? String(selectedVehicle.mileage)
+        : prev.mileageStart,
+      vehicleConditionStart: selectedVehicle
+        ? selectedVehicle.condition
+        : prev.vehicleConditionStart,
+    }));
+  };
+
   useEffect(() => {
+    const fetchCustomerOptions = async () => {
+      const res = await customerAPI.options();
+      if (res.success && res.data) {
+        const mappedOptions = res.data.map((item) => ({
+          label: item.name,
+          value: String(item.id),
+        }));
+
+        setCustomerOptions(mappedOptions);
+      }
+    };
+
     const fetchVehicleOptions = async () => {
       const res = await vehicleAPI.options(AVAILABLE);
       if (res.success && res.data) {
+        setVehicleOptionData(res.data);
+
         const mappedOptions = res.data.map((item) => ({
           label: item.name,
           value: String(item.id),
@@ -87,6 +133,8 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
         setVehicleOptions(mappedOptions);
       }
     };
+
+    fetchCustomerOptions();
     fetchVehicleOptions();
   }, []);
 
@@ -165,7 +213,7 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
           <div className="grid gap-2">
             <Label htmlFor="customerId">Customer</Label>
             <SelectOptions
-              options={vehicleOptions}
+              options={customerOptions}
               value={formValues.customerId}
               onChange={(value) => onChange("customerId", value as string)}
               placeholder="Select customer"
@@ -176,7 +224,7 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
             <SelectOptions
               options={vehicleOptions}
               value={formValues.vehicleId}
-              onChange={(value) => onChange("vehicleId", value as string)}
+              onChange={(value) => onVehicleChange(value as string)}
               placeholder="Select vehicle"
             />
           </div>
@@ -198,6 +246,12 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
             <Input
               id="endDate"
               type="date"
+              min={(() => {
+                if (!formValues.startDate) return "";
+                const start = new Date(formValues.startDate);
+                start.setDate(start.getDate() + 1);
+                return start.toISOString().split("T")[0];
+              })()}
               value={formValues.endDate}
               onChange={(e) => onChange("endDate", e.target.value)}
               required
@@ -212,7 +266,10 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               id="totalDay"
               disabled
               type="number"
-              value={formValues.totalDay}
+              value={calculateTotalDays(
+                formValues.startDate,
+                formValues.endDate,
+              )}
               onChange={(e) => onChange("totalDay", e.target.value)}
               required
             />
@@ -237,7 +294,9 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               id="subtotal"
               type="number"
               disabled
-              value={formValues.subtotal}
+              value={
+                Number(formValues.totalDay) * Number(formValues.price) || 0
+              }
               onChange={(e) => onChange("subtotal", e.target.value)}
               required
             />
@@ -249,13 +308,17 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
             <Label htmlFor="vehicleConditionStart">
               Vehicle Condition Start
             </Label>
-            <Input
-              id="vehicleConditionStart"
+            <SelectOptions
+              options={[
+                { label: "Good", value: "good" },
+                { label: "Broke", value: "broke" },
+                { label: "Service", value: "service" },
+              ]}
               value={formValues.vehicleConditionStart}
-              onChange={(e) =>
-                onChange("vehicleConditionStart", e.target.value)
+              onChange={(value) =>
+                onChange("vehicleConditionStart", value as string)
               }
-              required
+              placeholder="Select vehicleConditionStart"
             />
           </div>
           <div className="grid gap-2">

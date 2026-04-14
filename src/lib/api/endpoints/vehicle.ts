@@ -40,8 +40,14 @@ export const vehicleAPI = {
   },
 
   options: async (status: string) => {
-    return await apiClient.get<{ id: number; name: string }[]>(
-      `/vehicles/options?status=${status}`,
-    );
+    return await apiClient.get<
+      {
+        id: number;
+        name: string;
+        dailyRate: number;
+        mileage: number;
+        condition: string;
+      }[]
+    >(`/vehicles/options?status=${status}`);
   },
 };

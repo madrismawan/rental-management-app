@@ -41,4 +41,10 @@ export const customerAPI = {
   remove: async (id: string) => {
     return await apiClient.delete<{ success: boolean }>(`/customers/${id}`);
   },
+
+  options: async () => {
+    return await apiClient.get<{ id: string; name: string }[]>(
+      "/customers/options",
+    );
+  },
 };
