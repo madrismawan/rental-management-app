@@ -28,11 +28,12 @@ export const getCustomerColumns = ({
   deletingId,
 }: CustomerColumnOptions): ColumnDef<Customer>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.id}</span>
-    ),
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
   },
   {
     accessorKey: "phoneNumber",
@@ -63,13 +64,8 @@ export const getCustomerColumns = ({
   },
   {
     accessorKey: "createdAt",
-    header: "Created",
+    header: "Join Date",
     cell: ({ row }) => formatDate(row.original.createdAt),
-  },
-  {
-    accessorKey: "updatedAt",
-    header: "Updated",
-    cell: ({ row }) => formatDate(row.original.updatedAt),
   },
   {
     id: "actions",

@@ -42,7 +42,9 @@ export default function CustomerEditPage() {
       mode="edit"
       customerId={customer.id}
       initialValues={{
-        userId: customer.userId,
+        id: customer.id,
+        name: customer.name,
+        email: customer.email,
         phoneNumber: customer.phoneNumber,
         address: customer.address,
         avatarUrl: customer.avatarUrl,

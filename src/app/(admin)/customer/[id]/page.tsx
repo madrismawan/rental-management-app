@@ -71,6 +71,12 @@ export default function CustomerDetailPage() {
           <span className="font-medium">User ID:</span> {customer.userId}
         </p>
         <p>
+          <span className="font-medium">Name:</span> {customer.name}
+        </p>
+        <p>
+          <span className="font-medium">Email:</span> {customer.email}
+        </p>
+        <p>
           <span className="font-medium">Phone Number:</span>{" "}
           {customer.phoneNumber}
         </p>

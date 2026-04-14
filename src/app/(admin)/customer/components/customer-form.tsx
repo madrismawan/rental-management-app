@@ -14,7 +14,10 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 interface CustomerFormValues {
-  userId: string;
+  id: string;
+  name: string;
+  email: string;
+  password: string;
   phoneNumber: string;
   address: string;
   avatarUrl: string;
@@ -32,7 +35,10 @@ export function CustomerForm({
   initialValues,
 }: CustomerFormProps) {
   const [formValues, setFormValues] = useState<CustomerFormValues>({
-    userId: initialValues?.userId ?? "",
+    id: initialValues?.id ?? "",
+    name: initialValues?.name ?? "",
+    email: initialValues?.email ?? "",
+    password: initialValues?.password ?? "",
     phoneNumber: initialValues?.phoneNumber ?? "",
     address: initialValues?.address ?? "",
     avatarUrl: initialValues?.avatarUrl ?? "",
@@ -60,7 +66,10 @@ export function CustomerForm({
 
     if (mode === "create") {
       const payload: CreateCustomerInput = {
-        userId: formValues.userId,
+        id: formValues.id,
+        name: formValues.name,
+        email: formValues.email,
+        password: formValues.password,
         phoneNumber: formValues.phoneNumber,
         address: formValues.address,
         avatarUrl: formValues.avatarUrl,
@@ -84,7 +93,10 @@ export function CustomerForm({
     }
 
     const payload: UpdateCustomerInput = {
-      userId: formValues.userId,
+      id: formValues.id,
+      name: formValues.name,
+      email: formValues.email,
+      password: formValues.password,
       phoneNumber: formValues.phoneNumber,
       address: formValues.address,
       avatarUrl: formValues.avatarUrl,
@@ -117,14 +129,37 @@ export function CustomerForm({
 
       <form className="grid gap-4" onSubmit={handleSubmit}>
         <div className="grid gap-2">
-          <Label htmlFor="userId">User ID</Label>
+          <Label htmlFor="name">Name</Label>
           <Input
-            id="userId"
-            disabled={mode === "edit"}
-            value={formValues.userId}
-            onChange={(e) => onChange("userId", e.target.value)}
-            placeholder="Enter user ID"
+            id="name"
+            value={formValues.name}
+            onChange={(e) => onChange("name", e.target.value)}
+            placeholder="Enter customer name"
             required
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formValues.email}
+            onChange={(e) => onChange("email", e.target.value)}
+            placeholder="customer@email.com"
+            required
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            value={formValues.password}
+            onChange={(e) => onChange("password", e.target.value)}
+            placeholder="Enter password"
+            required={mode === "create"}
           />
         </div>
 

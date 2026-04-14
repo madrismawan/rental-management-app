@@ -7,25 +7,53 @@ import { useEffect, useState } from "react";
 import { getCustomerColumns } from "./data/customer-columns";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { PaginationState } from "@tanstack/react-table";
+import { normalizePaginationMeta, PaginationMeta } from "@/lib/api/pagination";
 
 export default function CustomerPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pageCount, setPageCount] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const { success, error } = useToast();
   const router = useRouter();
 
   useEffect(() => {
     const fetchCustomers = async () => {
-      const res = await customerAPI.getAll();
+      setLoading(true);
+
+      const res = await customerAPI.getAll({
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+      });
+
       if (res.success && res.data) {
         setCustomers(res.data);
       }
+      console.log("ini meta", res.meta);
+
+      const { totalPages } = normalizePaginationMeta(
+        res.meta as PaginationMeta,
+      );
+
+      setPageCount(totalPages);
+
+      if (pagination.pageIndex > totalPages - 1) {
+        setPagination((prev) => ({
+          ...prev,
+          pageIndex: Math.max(totalPages - 1, 0),
+        }));
+      }
+
       setLoading(false);
     };
 
     fetchCustomers();
-  }, []);
+  }, [pagination.pageIndex, pagination.pageSize]);
 
   const handleDelete = async (customer: Customer) => {
     const confirmed = window.confirm(
@@ -63,6 +91,10 @@ export default function CustomerPage() {
         data={customers}
         filterSearchKey={["id", "phoneNumber", "address"]}
         onCreateRow={() => router.push("/customer/create")}
+        manualPagination
+        pageCount={pageCount}
+        paginationState={pagination}
+        onPaginationChange={setPagination}
       />
       {loading && <p className="text-sm text-muted-foreground">Loading...</p>}
     </section>
