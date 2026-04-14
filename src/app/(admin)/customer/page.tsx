@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PaginationState } from "@tanstack/react-table";
 import { normalizePaginationMeta, PaginationMeta } from "@/lib/api/pagination";
+import { modalConfirmation } from "@/components/common/modal-confirmation";
 
 export default function CustomerPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -59,24 +60,26 @@ export default function CustomerPage() {
     fetchCustomers();
   }, [pagination.pageIndex, pagination.pageSize]);
 
-  const handleDelete = async (customer: Customer) => {
-    const confirmed = window.confirm(
-      `Delete customer with phone ${customer.phoneNumber}?`,
-    );
+  const handleDelete = (customer: Customer) => {
+    modalConfirmation({
+      title: "Delete Customer",
+      description: `Delete customer with phone ${customer.phoneNumber}? This action cannot be undone.`,
+      onConfirm: async () => {
+        setDeletingId(customer.id);
+        const res = await customerAPI.remove(customer.id);
 
-    if (!confirmed) return;
+        if (res.success) {
+          setCustomers((prev) =>
+            prev.filter((item) => item.id !== customer.id),
+          );
+          success("Customer deleted successfully");
+        } else {
+          error(res.error?.message ?? "Failed to delete customer");
+        }
 
-    setDeletingId(customer.id);
-    const res = await customerAPI.remove(customer.id);
-
-    if (res.success) {
-      setCustomers((prev) => prev.filter((item) => item.id !== customer.id));
-      success("Customer deleted successfully");
-    } else {
-      error(res.error?.message ?? "Failed to delete customer");
-    }
-
-    setDeletingId(null);
+        setDeletingId(null);
+      },
+    });
   };
 
   const columns = getCustomerColumns({

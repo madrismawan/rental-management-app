@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PaginationState } from "@tanstack/react-table";
 import { normalizePaginationMeta, PaginationMeta } from "@/lib/api/pagination";
+import { modalConfirmation } from "@/components/common/modal-confirmation";
 
 export default function VehiclePage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -59,24 +60,27 @@ export default function VehiclePage() {
     fetchVehicles();
   }, [pagination.pageIndex, pagination.pageSize]);
 
-  const handleDelete = async (vehicle: Vehicle) => {
-    const confirmed = window.confirm(`Delete vehicle ${vehicle.plateNumber}?`);
-    if (!confirmed) return;
+  const handleCancel = (vehicle: Vehicle) => {
+    modalConfirmation({
+      title: "Cancel Vehicle",
+      description: `Cancel vehicle ${vehicle.plateNumber}? This action cannot be undone.`,
+      onConfirm: async () => {
+        setDeletingId(vehicle.id);
+        const res = await vehicleAPI.remove(vehicle.id);
 
-    setDeletingId(vehicle.id);
-    const res = await vehicleAPI.remove(vehicle.id);
+        if (res.success) {
+          setVehicles((prev) => prev.filter((item) => item.id !== vehicle.id));
+          success("Vehicle deleted successfully");
+        } else {
+          error(res.error?.message ?? "Failed to delete vehicle");
+        }
 
-    if (res.success) {
-      setVehicles((prev) => prev.filter((item) => item.id !== vehicle.id));
-      success("Vehicle deleted successfully");
-    } else {
-      error(res.error?.message ?? "Failed to delete vehicle");
-    }
-
-    setDeletingId(null);
+        setDeletingId(null);
+      },
+    });
   };
 
-  const columns = getVehicleColumns({ onDelete: handleDelete, deletingId });
+  const columns = getVehicleColumns({ onCancel: handleCancel, deletingId });
 
   return (
     <section className="grid gap-4 container">

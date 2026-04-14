@@ -148,6 +148,25 @@ export class ApiClient {
     });
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  patch<T>(
+    endpoint: string,
+    data?: any,
+    options?: RequestInit,
+  ): Promise<ApiResponse<T>> {
+    const isFormData = this.isFormDataBody(data);
+
+    return this.request<T>(endpoint, {
+      ...options,
+      method: "PATCH",
+      body: data
+        ? isFormData
+          ? data
+          : JSON.stringify(snakecaseKeys(data, { deep: true }))
+        : undefined,
+    });
+  }
+
   delete<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }

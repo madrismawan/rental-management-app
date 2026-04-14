@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { PaginationState } from "@tanstack/react-table";
 import { normalizePaginationMeta, PaginationMeta } from "@/lib/api/pagination";
+import { modalConfirmation } from "@/components/common/modal-confirmation";
 
 export default function VehicleIncidentPage() {
   const [incidents, setIncidents] = useState<VehicleIncident[]>([]);
@@ -59,23 +60,26 @@ export default function VehicleIncidentPage() {
     fetchIncidents();
   }, [pagination.pageIndex, pagination.pageSize]);
 
-  const handleDelete = async (incident: VehicleIncident) => {
-    const confirmed = window.confirm(
-      `Delete incident #${incident.id} for vehicle ${incident.vehicleId}?`,
-    );
-    if (!confirmed) return;
+  const handleDelete = (incident: VehicleIncident) => {
+    modalConfirmation({
+      title: "Delete Vehicle Incident",
+      description: `Delete incident #${incident.id} for vehicle ${incident.vehicleId}? This action cannot be undone.`,
+      onConfirm: async () => {
+        setDeletingId(incident.id);
+        const res = await vehicleIncidentAPI.remove(incident.id);
 
-    setDeletingId(incident.id);
-    const res = await vehicleIncidentAPI.remove(incident.id);
+        if (res.success) {
+          setIncidents((prev) =>
+            prev.filter((item) => item.id !== incident.id),
+          );
+          success("Vehicle incident deleted successfully");
+        } else {
+          error(res.error?.message ?? "Failed to delete vehicle incident");
+        }
 
-    if (res.success) {
-      setIncidents((prev) => prev.filter((item) => item.id !== incident.id));
-      success("Vehicle incident deleted successfully");
-    } else {
-      error(res.error?.message ?? "Failed to delete vehicle incident");
-    }
-
-    setDeletingId(null);
+        setDeletingId(null);
+      },
+    });
   };
 
   const columns = getVehicleIncidentColumns({

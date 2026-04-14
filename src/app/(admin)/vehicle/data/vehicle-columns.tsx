@@ -20,12 +20,12 @@ const formatDate = (value: Date | string) => {
 };
 
 interface VehicleColumnOptions {
-  onDelete: (vehicle: Vehicle) => void;
+  onCancel: (vehicle: Vehicle) => void;
   deletingId?: number | null;
 }
 
 export const getVehicleColumns = ({
-  onDelete,
+  onCancel,
   deletingId,
 }: VehicleColumnOptions): ColumnDef<Vehicle>[] => [
   {
@@ -99,9 +99,9 @@ export const getVehicleColumns = ({
             <DropdownMenuItem
               variant="destructive"
               disabled={isDeleting}
-              onClick={() => onDelete(vehicle)}
+              onClick={() => onCancel(vehicle)}
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? "Cancelling..." : "Cancel"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

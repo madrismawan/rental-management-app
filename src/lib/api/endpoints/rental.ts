@@ -38,4 +38,7 @@ export const rentalAPI = {
   remove: async (id: number) => {
     return await apiClient.delete<{ success: boolean }>(`/rentals/${id}`);
   },
+  cancel: async (id: number) => {
+    return await apiClient.patch<{ success: boolean }>(`/rentals/${id}/cancel`);
+  },
 };

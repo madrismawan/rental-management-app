@@ -11,22 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IconDotsVertical } from "@tabler/icons-react";
-
-const formatDate = (value: Date | string | undefined) => {
-  if (!value) return "-";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleDateString();
-};
+import { formatDate } from "@/lib/date";
 
 interface RentalColumnOptions {
-  onDelete: (rental: Rental) => void;
-  deletingId?: number | null;
+  onCancel: (rental: Rental) => void;
+  cancelingId?: number | null;
 }
 
 export const getRentalColumns = ({
-  onDelete,
-  deletingId,
+  onCancel,
+  cancelingId,
 }: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
     accessorKey: "customerName",
@@ -49,6 +43,30 @@ export const getRentalColumns = ({
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const normalizedStatus = row.original.status.toLowerCase();
+      const statusClassName =
+        normalizedStatus === "pending"
+          ? "bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100"
+          : normalizedStatus === "active"
+            ? "bg-green-100 text-green-800 border-green-200 hover:bg-green-100"
+            : normalizedStatus === "completed"
+              ? "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-100"
+              : normalizedStatus === "cancelled"
+                ? "bg-red-100 text-red-800 border-red-200 hover:bg-red-100"
+                : "bg-muted text-muted-foreground border-border hover:bg-muted";
+
+      return (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={`pointer-events-none h-7 rounded-full px-3 ${statusClassName}`}
+        >
+          {row.original.status}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "subtotal",
@@ -60,7 +78,8 @@ export const getRentalColumns = ({
     header: "Actions",
     cell: ({ row }) => {
       const rental = row.original;
-      const isDeleting = deletingId === rental.id;
+      const status = row.original.status.toLowerCase();
+      const isCancelling = cancelingId === rental.id;
 
       return (
         <DropdownMenu>
@@ -78,15 +97,13 @@ export const getRentalColumns = ({
             <DropdownMenuItem asChild>
               <Link href={`/rental/${rental.id}`}>Detail</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/rental/${rental.id}/edit`}>Update</Link>
-            </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              disabled={isDeleting}
-              onClick={() => onDelete(rental)}
+              hidden={status !== "pending"}
+              disabled={isCancelling}
+              onClick={() => onCancel(rental)}
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isCancelling ? "Cancelling..." : "Cancel"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
