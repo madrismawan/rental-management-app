@@ -5,6 +5,7 @@ export const createCustomerSchema = z.object({
   name: z.string().min(1, "Customer name is required"),
   email: z.string().email("Customer email is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  status: z.enum(["active", "inactive", "banned"]),
   phoneNumber: z
     .string()
     .min(8, "Phone number must be at least 8 characters")

@@ -1,5 +1,6 @@
 "use client";
 
+import { SelectOptions } from "@/components/common/select-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ interface CustomerFormValues {
   password: string;
   phoneNumber: string;
   address: string;
+  status: string;
   avatarUrl: string;
 }
 
@@ -38,6 +40,7 @@ export function CustomerForm({
     password: initialValues?.password ?? "",
     phoneNumber: initialValues?.phoneNumber ?? "",
     address: initialValues?.address ?? "",
+    status: initialValues?.status ?? "active",
     avatarUrl: initialValues?.avatarUrl ?? "",
   });
   const [avatarPreview, setAvatarPreview] = useState(
@@ -80,6 +83,7 @@ export function CustomerForm({
 
     data.append("phone_number", formValues.phoneNumber);
     data.append("address", formValues.address);
+    data.append("status", formValues.status);
 
     if (avatarFile) {
       data.append("avatar", avatarFile);
@@ -193,6 +197,20 @@ export function CustomerForm({
             onChange={(e) => onChange("address", e.target.value)}
             placeholder="Enter address"
             required
+          />
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="status">Status</Label>
+          <SelectOptions
+            options={[
+              { label: "Active", value: "active" },
+              { label: "In Active", value: "inactive" },
+              { label: "Banned", value: "banned" },
+            ]}
+            value={formValues.status}
+            onChange={(value) => onChange("status", (value as string) || "")}
+            placeholder="Select status"
           />
         </div>
 

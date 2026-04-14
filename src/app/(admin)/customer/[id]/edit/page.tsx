@@ -47,6 +47,7 @@ export default function CustomerEditPage() {
         email: customer.email,
         phoneNumber: customer.phoneNumber,
         address: customer.address,
+        status: customer.status,
         avatarUrl: customer.avatarUrl,
       }}
     />

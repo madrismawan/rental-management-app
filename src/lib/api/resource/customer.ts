@@ -6,6 +6,7 @@ export interface Customer {
   password: string;
   phoneNumber: string;
   address: string;
+  status: string;
   avatarUrl: string;
   createdAt: string;
   updatedAt: string;
