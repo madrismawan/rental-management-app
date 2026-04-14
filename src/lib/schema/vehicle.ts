@@ -10,6 +10,7 @@ export const vehicleSchema = z.object({
   year: z.number().int().min(1900, "Year must be valid"),
   mileage: z.number().nonnegative("Mileage cannot be negative"),
   dailyRate: z.number().nonnegative("Daily rate cannot be negative"),
+  condition: z.string().min(1, "Condition is required"),
   status: z.string().min(1, "Status is required"),
   notes: z.string(),
   createdAt: z.coerce.date(),
@@ -25,6 +26,7 @@ export const createVehicleSchema = vehicleSchema.pick({
   year: true,
   mileage: true,
   dailyRate: true,
+  condition: true,
   status: true,
   notes: true,
 });

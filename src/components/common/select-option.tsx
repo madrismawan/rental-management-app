@@ -120,11 +120,11 @@ export function SelectOptions({
         </div>
 
         {open && (
-          <div className="absolute mt-1 w-full z-10 rounded-md border bg-popover text-popover-foreground shadow-md">
+          <div className="absolute mt-1 w-full z-10 rounded-md border bg-popover text-popover-foreground shadow-md max-h-72 overflow-y-auto">
             <Command>
               <CommandInput placeholder="Search..." />
               <CommandEmpty>No options found.</CommandEmpty>
-              <CommandGroup>
+              <CommandGroup className="max-h-60 overflow-y-auto">
                 {availableOptions.map((option) => (
                   <CommandItem
                     key={option.value}

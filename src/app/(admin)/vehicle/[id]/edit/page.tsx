@@ -55,6 +55,7 @@ export default function VehicleEditPage() {
         year: String(vehicle.year),
         mileage: String(vehicle.mileage),
         dailyRate: String(vehicle.dailyRate),
+        condition: vehicle.condition,
         status: vehicle.status,
         notes: vehicle.notes,
       }}

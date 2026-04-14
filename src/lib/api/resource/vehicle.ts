@@ -8,6 +8,7 @@ export interface Vehicle {
   year: number;
   mileage: number;
   dailyRate: number;
+  condition: string;
   status: string;
   notes: string;
   createdAt: Date;

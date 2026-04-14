@@ -21,6 +21,7 @@ interface VehicleFormValues {
   year: string;
   mileage: string;
   dailyRate: string;
+  condition: string;
   status: string;
   notes: string;
 }
@@ -45,6 +46,7 @@ export function VehicleForm({
     year: initialValues?.year ?? "",
     mileage: initialValues?.mileage ?? "",
     dailyRate: initialValues?.dailyRate ?? "",
+    condition: initialValues?.condition ?? "",
     status: initialValues?.status ?? "",
     notes: initialValues?.notes ?? "",
   });
@@ -72,6 +74,7 @@ export function VehicleForm({
     year: Number(formValues.year),
     mileage: Number(formValues.mileage),
     dailyRate: Number(formValues.dailyRate),
+    condition: formValues.condition,
     status: formValues.status,
     notes: formValues.notes,
   });
@@ -169,6 +172,19 @@ export function VehicleForm({
               onChange={(e) => onChange("color", e.target.value)}
               placeholder="Black"
               required
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="condition">Condition</Label>
+            <SelectOptions
+              options={[
+                { label: "Good", value: "good" },
+                { label: "Broke", value: "broke" },
+                { label: "Service", value: "service" },
+              ]}
+              value={formValues.condition}
+              onChange={(value) => onChange("condition", value as string)}
+              placeholder="Select condition"
             />
           </div>
           <div className="grid gap-2">

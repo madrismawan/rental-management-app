@@ -38,4 +38,10 @@ export const vehicleAPI = {
   remove: async (id: number) => {
     return await apiClient.delete<{ success: boolean }>(`/vehicles/${id}`);
   },
+
+  options: async (status: string) => {
+    return await apiClient.get<{ id: number; name: string }[]>(
+      `/vehicles/options?status=${status}`,
+    );
+  },
 };
