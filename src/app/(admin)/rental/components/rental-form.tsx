@@ -84,6 +84,11 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
   );
   const backHref = mode === "create" ? "/rental" : `/rental/${rentalId}`;
   const submitLabel = mode === "create" ? "Create" : "Update";
+  const totalDayValue = calculateTotalDays(
+    formValues.startDate,
+    formValues.endDate,
+  );
+  const subtotalValue = totalDayValue * Number(formValues.price || 0);
 
   const onChange = (field: keyof RentalFormValues, value: string) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
@@ -146,10 +151,10 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
     returnDate: formValues.returnDate
       ? new Date(formValues.returnDate)
       : undefined,
-    totalDay: Number(formValues.totalDay),
+    totalDay: totalDayValue,
     price: Number(formValues.price),
     penaltyFee: Number(formValues.penaltyFee),
-    subtotal: Number(formValues.subtotal),
+    subtotal: subtotalValue,
     notes: formValues.notes,
     status: formValues.status,
     vehicleConditionStart: formValues.vehicleConditionStart,
@@ -266,10 +271,7 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               id="totalDay"
               disabled
               type="number"
-              value={calculateTotalDays(
-                formValues.startDate,
-                formValues.endDate,
-              )}
+              value={totalDayValue}
               onChange={(e) => onChange("totalDay", e.target.value)}
               required
             />
@@ -294,9 +296,7 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
               id="subtotal"
               type="number"
               disabled
-              value={
-                Number(formValues.totalDay) * Number(formValues.price) || 0
-              }
+              value={subtotalValue}
               onChange={(e) => onChange("subtotal", e.target.value)}
               required
             />

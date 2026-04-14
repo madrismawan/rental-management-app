@@ -29,12 +29,12 @@ export const getRentalColumns = ({
   deletingId,
 }: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
-    accessorKey: "customerId",
-    header: "Customer ID",
+    accessorKey: "customerName",
+    header: "Customer",
   },
   {
-    accessorKey: "vehicleId",
-    header: "Vehicle ID",
+    accessorKey: "vehicleName",
+    header: "Vehicle",
   },
   {
     accessorKey: "startDate",
