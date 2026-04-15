@@ -70,6 +70,10 @@ export const rentalAPI = {
     return await apiClient.patch<{ success: boolean }>(`/rentals/${id}/cancel`);
   },
 
+  approve: async (id: number) => {
+    return await apiClient.patch<{ success: boolean }>(`/rentals/${id}/active`);
+  },
+
   complete: async (id: number, input: CompleteRentalInput) => {
     return await apiClient.patch<{ success: boolean }>(
       `/rentals/${id}/complete`,

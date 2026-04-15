@@ -18,10 +18,6 @@ interface VehicleIncidentColumnOptions {
   onProgress: (incident: VehicleIncident) => void;
   onResolve: (incident: VehicleIncident) => void;
   onClose: (incident: VehicleIncident) => void;
-  deletingId?: number | null;
-  progressingId?: number | null;
-  resolvingId?: number | null;
-  closingId?: number | null;
 }
 
 export const getVehicleIncidentColumns = ({
@@ -29,10 +25,6 @@ export const getVehicleIncidentColumns = ({
   onProgress,
   onResolve,
   onClose,
-  deletingId,
-  progressingId,
-  resolvingId,
-  closingId,
 }: VehicleIncidentColumnOptions): ColumnDef<VehicleIncident>[] => [
   {
     accessorKey: "vehicleName",
@@ -85,10 +77,6 @@ export const getVehicleIncidentColumns = ({
     header: "Actions",
     cell: ({ row }) => {
       const incident = row.original;
-      const isDeleting = deletingId === incident.id;
-      const isProgressing = progressingId === incident.id;
-      const isResolving = resolvingId === incident.id;
-      const isClosing = closingId === incident.id;
       const status = row.original.status.toLowerCase();
 
       return (
@@ -112,32 +100,28 @@ export const getVehicleIncidentColumns = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               hidden={status !== "open"}
-              disabled={isProgressing}
               onClick={() => onProgress(incident)}
             >
-              {isProgressing ? "Processing..." : "Progress"}
+              Progress
             </DropdownMenuItem>
             <DropdownMenuItem
               hidden={status !== "in_progress"}
-              disabled={isResolving}
               onClick={() => onResolve(incident)}
             >
-              {isResolving ? "Resolving..." : "Resolved"}
+              Resolved
             </DropdownMenuItem>
             <DropdownMenuItem
-              hidden={status !== "open"}
-              disabled={isClosing}
+              hidden={status !== "resolved"}
               onClick={() => onClose(incident)}
             >
-              {isClosing ? "Closing..." : "Closed"}
+              Closed
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              disabled={isDeleting}
               hidden={status !== "open"}
               onClick={() => onDelete(incident)}
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

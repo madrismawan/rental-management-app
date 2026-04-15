@@ -14,17 +14,15 @@ import { IconDotsVertical } from "@tabler/icons-react";
 import { formatDate } from "@/lib/date";
 
 interface RentalColumnOptions {
+  onApprove: (rental: Rental) => void;
   onCancel: (rental: Rental) => void;
   onComplete: (rental: Rental) => void;
-  cancelingId?: number | null;
-  completingId?: number | null;
 }
 
 export const getRentalColumns = ({
+  onApprove,
   onCancel,
   onComplete,
-  cancelingId,
-  completingId,
 }: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
     accessorKey: "noInvoice",
@@ -87,8 +85,6 @@ export const getRentalColumns = ({
     cell: ({ row }) => {
       const rental = row.original;
       const status = row.original.status.toLowerCase();
-      const isCancelling = cancelingId === rental.id;
-      const isCompleting = completingId === rental.id;
 
       return (
         <DropdownMenu>
@@ -107,19 +103,23 @@ export const getRentalColumns = ({
               <Link href={`/rental/${rental.id}`}>Detail</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              variant="destructive"
               hidden={status !== "pending"}
-              disabled={isCancelling}
-              onClick={() => onCancel(rental)}
+              onClick={() => onApprove(rental)}
             >
-              {isCancelling ? "Cancelling..." : "Cancel"}
+              Approve
             </DropdownMenuItem>
             <DropdownMenuItem
-              disabled={isCompleting}
+              variant="destructive"
+              hidden={status !== "pending"}
+              onClick={() => onCancel(rental)}
+            >
+              Cancel
+            </DropdownMenuItem>
+            <DropdownMenuItem
               hidden={status !== "active"}
               onClick={() => onComplete(rental)}
             >
-              {isCompleting ? "Completing..." : "Completed"}
+              Completed
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

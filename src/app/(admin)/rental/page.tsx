@@ -21,7 +21,6 @@ import { CompleteRentalInput } from "@/lib/schema/rental";
 export default function RentalPage() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cancelingId, setCancelingId] = useState<number | null>(null);
   const [completingId, setCompletingId] = useState<number | null>(null);
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
   const [selectedRental, setSelectedRental] = useState<Rental | null>(null);
@@ -88,7 +87,6 @@ export default function RentalPage() {
       title: "Cancel Rental",
       description: `Cancel rental #${rental.id}? This action cannot be undone.`,
       onConfirm: async () => {
-        setCancelingId(rental.id);
         const res = await rentalAPI.cancel(rental.id);
 
         if (res.success) {
@@ -97,10 +95,19 @@ export default function RentalPage() {
         } else {
           error(res.error?.message ?? "Failed to cancel rental");
         }
-
-        setCancelingId(null);
       },
     });
+  };
+
+  const handleApprove = async (rental: Rental) => {
+    const res = await rentalAPI.approve(rental.id);
+
+    if (res.success) {
+      await fetchRentals();
+      success("Rental approved successfully");
+    } else {
+      error(res.error?.message ?? "Failed to approve rental");
+    }
   };
 
   const handleOpenCompleteModal = (rental: Rental) => {
@@ -164,10 +171,9 @@ export default function RentalPage() {
   };
 
   const columns = getRentalColumns({
+    onApprove: handleApprove,
     onCancel: handleCancel,
     onComplete: handleOpenCompleteModal,
-    cancelingId,
-    completingId,
   });
 
   return (
