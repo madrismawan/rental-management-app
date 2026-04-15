@@ -11,12 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IconDotsVertical } from "@tabler/icons-react";
-
-const formatDate = (value: Date | string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleDateString();
-};
+import { formatDate } from "@/lib/date";
 
 interface VehicleIncidentColumnOptions {
   onDelete: (incident: VehicleIncident) => void;
@@ -43,13 +38,37 @@ export const getVehicleIncidentColumns = ({
     header: "Incident Type",
   },
   {
-    accessorKey: "penaltyFee",
-    header: "Penalty Fee",
-    cell: ({ row }) => row.original.penaltyFee.toLocaleString(),
+    accessorKey: "cost",
+    header: "Cost",
+    cell: ({ row }) => row.original.cost.toLocaleString(),
   },
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const normalizedStatus = row.original.status.toLowerCase();
+      const statusClassName =
+        normalizedStatus === "open"
+          ? "bg-yellow-100 text-yellow-800 border-yellow-200 hover:bg-yellow-100"
+          : normalizedStatus === "in_progress"
+            ? "bg-green-100 text-green-800 border-green-200 hover:bg-green-100"
+            : normalizedStatus === "resolved"
+              ? "bg-blue-100 text-blue-800 border-blue-200 hover:bg-blue-100"
+              : normalizedStatus === "closed"
+                ? "bg-red-100 text-red-800 border-red-200 hover:bg-red-100"
+                : "bg-muted text-muted-foreground border-border hover:bg-muted";
+
+      return (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={`pointer-events-none h-7 rounded-full px-3 ${statusClassName}`}
+        >
+          {row.original.status}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "incidentDate",

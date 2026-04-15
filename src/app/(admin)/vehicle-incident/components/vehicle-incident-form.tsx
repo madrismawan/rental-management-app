@@ -1,17 +1,23 @@
 "use client";
 
+import { SelectOptions } from "@/components/common/select-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { customerAPI } from "@/lib/api/endpoints/customer";
+import { rentalAPI } from "@/lib/api/endpoints/rental";
+import { vehicleAPI } from "@/lib/api/endpoints/vehicle";
 import { vehicleIncidentAPI } from "@/lib/api/endpoints/vehicle-incident";
+import { Options } from "@/lib/api/types";
 import {
   CreateVehicleIncidentInput,
   UpdateVehicleIncidentInput,
 } from "@/lib/schema/vehicle-incident";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { COMPLETED } from "@/constants/status";
 
 interface VehicleIncidentFormValues {
   vehicleId: string;
@@ -20,7 +26,7 @@ interface VehicleIncidentFormValues {
   incidentDate: string;
   incidentType: string;
   description: string;
-  penaltyFee: string;
+  cost: string;
   status: string;
 }
 
@@ -42,9 +48,11 @@ export function VehicleIncidentForm({
     incidentDate: initialValues?.incidentDate ?? "",
     incidentType: initialValues?.incidentType ?? "",
     description: initialValues?.description ?? "",
-    penaltyFee: initialValues?.penaltyFee ?? "",
+    cost: initialValues?.cost ?? "",
     status: initialValues?.status ?? "",
   });
+  const [vehicleOptions, setVehicleOptions] = useState<Options[]>([]);
+  const [rentalOptions, setRentalOptions] = useState<Options[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const { success, error } = useToast();
   const router = useRouter();
@@ -62,6 +70,35 @@ export function VehicleIncidentForm({
     setFormValues((prev) => ({ ...prev, [field]: value }));
   };
 
+  useEffect(() => {
+    const fetchOptions = async () => {
+      const [vehicleRes, rentalRes] = await Promise.all([
+        vehicleAPI.options(),
+        rentalAPI.options({ status: COMPLETED }),
+      ]);
+
+      if (vehicleRes.success && vehicleRes.data) {
+        setVehicleOptions(
+          vehicleRes.data.map((item) => ({
+            label: `${item.id} - ${item.name}`,
+            value: String(item.id),
+          })),
+        );
+      }
+
+      if (rentalRes.success && rentalRes.data) {
+        setRentalOptions(
+          rentalRes.data.map((item) => ({
+            label: item.name,
+            value: String(item.id),
+          })),
+        );
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
   const buildPayload = (): CreateVehicleIncidentInput => ({
     vehicleId: Number(formValues.vehicleId),
     customerId: formValues.customerId
@@ -71,7 +108,7 @@ export function VehicleIncidentForm({
     incidentDate: new Date(formValues.incidentDate),
     incidentType: formValues.incidentType,
     description: formValues.description,
-    penaltyFee: Number(formValues.penaltyFee),
+    cost: Number(formValues.cost),
     status: formValues.status,
   });
 
@@ -128,13 +165,13 @@ export function VehicleIncidentForm({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="grid gap-2">
             <Label htmlFor="vehicleId">Vehicle ID</Label>
-            <Input
-              id="vehicleId"
-              type="number"
+            <SelectOptions
+              options={vehicleOptions}
               value={formValues.vehicleId}
-              onChange={(e) => onChange("vehicleId", e.target.value)}
-              placeholder="1"
-              required
+              onChange={(value) =>
+                onChange("vehicleId", (value as string) ?? "")
+              }
+              placeholder="Select vehicle"
             />
           </div>
           <div className="grid gap-2">
@@ -150,37 +187,32 @@ export function VehicleIncidentForm({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="grid gap-2">
-            <Label htmlFor="customerId">Customer ID (Optional)</Label>
-            <Input
-              id="customerId"
-              type="number"
-              value={formValues.customerId}
-              onChange={(e) => onChange("customerId", e.target.value)}
-              placeholder="1"
-            />
-          </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
           <div className="grid gap-2">
             <Label htmlFor="rentalId">Rental ID (Optional)</Label>
-            <Input
-              id="rentalId"
-              type="number"
+            <SelectOptions
+              options={rentalOptions}
               value={formValues.rentalId}
-              onChange={(e) => onChange("rentalId", e.target.value)}
-              placeholder="1"
+              onChange={(value) =>
+                onChange("rentalId", (value as string) ?? "")
+              }
+              placeholder="Select rental"
             />
           </div>
         </div>
 
         <div className="grid gap-2">
           <Label htmlFor="incidentType">Incident Type</Label>
-          <Input
-            id="incidentType"
+          <SelectOptions
+            options={[
+              { label: "Accident", value: "accident" },
+              { label: "Damage", value: "damage" },
+              { label: "Theft", value: "theft" },
+              { label: "Other", value: "other" },
+            ]}
             value={formValues.incidentType}
-            onChange={(e) => onChange("incidentType", e.target.value)}
-            placeholder="Scratch"
-            required
+            onChange={(e) => onChange("incidentType", e as string)}
+            placeholder="Select Incident Type"
           />
         </div>
 
@@ -195,25 +227,15 @@ export function VehicleIncidentForm({
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
           <div className="grid gap-2">
-            <Label htmlFor="penaltyFee">Penalty Fee</Label>
+            <Label htmlFor="cost">Cost</Label>
             <Input
-              id="penaltyFee"
+              id="cost"
               type="number"
-              value={formValues.penaltyFee}
-              onChange={(e) => onChange("penaltyFee", e.target.value)}
+              value={formValues.cost}
+              onChange={(e) => onChange("cost", e.target.value)}
               placeholder="500000"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="status">Status</Label>
-            <Input
-              id="status"
-              value={formValues.status}
-              onChange={(e) => onChange("status", e.target.value)}
-              placeholder="pending"
               required
             />
           </div>

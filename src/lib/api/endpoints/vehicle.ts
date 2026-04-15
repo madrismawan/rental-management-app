@@ -7,12 +7,26 @@ type VehicleQuery = {
   limit?: number;
 };
 
+type VehicleOptionQuery = {
+  status?: string;
+};
+
 const toQueryString = (query?: VehicleQuery) => {
   if (!query) return "";
 
   const params = new URLSearchParams();
   if (query.page !== undefined) params.set("page", String(query.page));
   if (query.limit !== undefined) params.set("limit", String(query.limit));
+
+  const parsed = params.toString();
+  return parsed ? `?${parsed}` : "";
+};
+
+const toOptionQueryString = (query?: VehicleOptionQuery) => {
+  if (!query) return "";
+
+  const params = new URLSearchParams();
+  if (query.status) params.set("status", query.status);
 
   const parsed = params.toString();
   return parsed ? `?${parsed}` : "";
@@ -39,7 +53,7 @@ export const vehicleAPI = {
     return await apiClient.delete<{ success: boolean }>(`/vehicles/${id}`);
   },
 
-  options: async (status: string) => {
+  options: async (query?: VehicleOptionQuery) => {
     return await apiClient.get<
       {
         id: number;
@@ -48,6 +62,6 @@ export const vehicleAPI = {
         mileage: number;
         condition: string;
       }[]
-    >(`/vehicles/options?status=${status}`);
+    >(`/vehicles/options${toOptionQueryString(query)}`);
   },
 };

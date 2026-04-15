@@ -126,7 +126,7 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
     };
 
     const fetchVehicleOptions = async () => {
-      const res = await vehicleAPI.options(AVAILABLE);
+      const res = await vehicleAPI.options({ status: AVAILABLE });
       if (res.success && res.data) {
         setVehicleOptionData(res.data);
 

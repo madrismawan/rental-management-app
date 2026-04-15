@@ -27,6 +27,10 @@ export const getRentalColumns = ({
   completingId,
 }: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
+    accessorKey: "noInvoice",
+    header: "No Invoice",
+  },
+  {
     accessorKey: "customerName",
     header: "Customer",
   },
@@ -112,7 +116,7 @@ export const getRentalColumns = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={isCompleting}
-              hidden={status === "completed" || status === "cancelled"}
+              hidden={status !== "active"}
               onClick={() => onComplete(rental)}
             >
               {isCompleting ? "Completing..." : "Completed"}

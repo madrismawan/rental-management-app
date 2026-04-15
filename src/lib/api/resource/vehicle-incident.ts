@@ -6,7 +6,7 @@ export interface VehicleIncident {
   incidentDate: Date;
   incidentType: string;
   description: string;
-  penaltyFee: number;
+  cost: number;
   status: string;
   createdAt: Date;
   updatedAt: Date;

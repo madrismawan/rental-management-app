@@ -61,7 +61,7 @@ export default function VehicleIncidentEditPage() {
         incidentDate: toDateInput(incident.incidentDate),
         incidentType: incident.incidentType,
         description: incident.description,
-        penaltyFee: String(incident.penaltyFee),
+        cost: String(incident.cost),
         status: incident.status,
       }}
     />

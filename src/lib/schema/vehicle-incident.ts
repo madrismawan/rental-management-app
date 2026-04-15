@@ -11,7 +11,7 @@ export const vehicleIncidentSchema = z.object({
   incidentDate: z.coerce.date(),
   incidentType: z.string().min(1, "Incident type is required"),
   description: z.string().min(1, "Description is required"),
-  penaltyFee: z.number().nonnegative("Penalty fee cannot be negative"),
+  cost: z.number().nonnegative("Cost cannot be negative"),
   status: z.string().min(1, "Status is required"),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -24,7 +24,7 @@ export const createVehicleIncidentSchema = vehicleIncidentSchema.pick({
   incidentDate: true,
   incidentType: true,
   description: true,
-  penaltyFee: true,
+  cost: true,
   status: true,
 });
 

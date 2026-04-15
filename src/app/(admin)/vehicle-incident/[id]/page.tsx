@@ -98,8 +98,7 @@ export default function VehicleIncidentDetailPage() {
           {incident.description}
         </p>
         <p>
-          <span className="font-medium">Penalty Fee:</span>{" "}
-          {incident.penaltyFee}
+          <span className="font-medium">Cost:</span> {incident.cost}
         </p>
         <p>
           <span className="font-medium">Status:</span> {incident.status}

@@ -12,12 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IconDotsVertical } from "@tabler/icons-react";
-
-const formatDate = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleDateString();
-};
+import { formatDate } from "@/lib/date";
 
 interface CustomerColumnOptions {
   onDelete: (customer: Customer) => void;
