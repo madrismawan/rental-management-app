@@ -15,6 +15,9 @@ export default function VehicleIncidentPage() {
   const [incidents, setIncidents] = useState<VehicleIncident[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [progressingId, setProgressingId] = useState<number | null>(null);
+  const [resolvingId, setResolvingId] = useState<number | null>(null);
+  const [closingId, setClosingId] = useState<number | null>(null);
   const [pageCount, setPageCount] = useState(1);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -82,9 +85,87 @@ export default function VehicleIncidentPage() {
     });
   };
 
+  const handleProgress = async (incident: VehicleIncident) => {
+    setProgressingId(incident.id);
+
+    const res = await vehicleIncidentAPI.progress(incident.id);
+
+    if (res.success) {
+      setIncidents((prev) =>
+        prev.map((item) =>
+          item.id === incident.id
+            ? {
+                ...item,
+                status: res.data?.status ?? "in_progress",
+              }
+            : item,
+        ),
+      );
+      success("Vehicle incident moved to in progress");
+    } else {
+      error(res.error?.message ?? "Failed to progress vehicle incident");
+    }
+
+    setProgressingId(null);
+  };
+
+  const handleResolve = async (incident: VehicleIncident) => {
+    setResolvingId(incident.id);
+
+    const res = await vehicleIncidentAPI.resolved(incident.id);
+
+    if (res.success) {
+      setIncidents((prev) =>
+        prev.map((item) =>
+          item.id === incident.id
+            ? {
+                ...item,
+                status: res.data?.status ?? "resolved",
+              }
+            : item,
+        ),
+      );
+      success("Vehicle incident resolved successfully");
+    } else {
+      error(res.error?.message ?? "Failed to resolve vehicle incident");
+    }
+
+    setResolvingId(null);
+  };
+
+  const handleClose = async (incident: VehicleIncident) => {
+    setClosingId(incident.id);
+
+    const res = await vehicleIncidentAPI.closed(incident.id);
+
+    if (res.success) {
+      setIncidents((prev) =>
+        prev.map((item) =>
+          item.id === incident.id
+            ? {
+                ...item,
+                status: res.data?.status ?? "closed",
+              }
+            : item,
+        ),
+      );
+      success("Vehicle incident closed successfully");
+    } else {
+      error(res.error?.message ?? "Failed to close vehicle incident");
+    }
+
+    setClosingId(null);
+  };
+
   const columns = getVehicleIncidentColumns({
     onDelete: handleDelete,
+    onProgress: handleProgress,
+    onResolve: handleResolve,
+    onClose: handleClose,
     deletingId,
+    progressingId,
+    resolvingId,
+    closingId,
   });
 
   return (

@@ -64,7 +64,7 @@ export default function VehicleIncidentDetailPage() {
           <Button variant="outline" asChild>
             <Link href="/vehicle-incident">Back</Link>
           </Button>
-          <Button asChild>
+          <Button asChild hidden={incident.status.toLowerCase() !== "open"}>
             <Link href={`/vehicle-incident/${incident.id}/edit`}>Update</Link>
           </Button>
         </div>

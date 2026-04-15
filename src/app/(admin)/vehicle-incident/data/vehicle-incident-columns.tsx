@@ -15,23 +15,28 @@ import { formatDate } from "@/lib/date";
 
 interface VehicleIncidentColumnOptions {
   onDelete: (incident: VehicleIncident) => void;
+  onProgress: (incident: VehicleIncident) => void;
+  onResolve: (incident: VehicleIncident) => void;
+  onClose: (incident: VehicleIncident) => void;
   deletingId?: number | null;
+  progressingId?: number | null;
+  resolvingId?: number | null;
+  closingId?: number | null;
 }
 
 export const getVehicleIncidentColumns = ({
   onDelete,
+  onProgress,
+  onResolve,
+  onClose,
   deletingId,
+  progressingId,
+  resolvingId,
+  closingId,
 }: VehicleIncidentColumnOptions): ColumnDef<VehicleIncident>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.id}</span>
-    ),
-  },
-  {
-    accessorKey: "vehicleId",
-    header: "Vehicle ID",
+    accessorKey: "vehicleName",
+    header: "Vehicle",
   },
   {
     accessorKey: "incidentType",
@@ -81,6 +86,10 @@ export const getVehicleIncidentColumns = ({
     cell: ({ row }) => {
       const incident = row.original;
       const isDeleting = deletingId === incident.id;
+      const isProgressing = progressingId === incident.id;
+      const isResolving = resolvingId === incident.id;
+      const isClosing = closingId === incident.id;
+      const status = row.original.status.toLowerCase();
 
       return (
         <DropdownMenu>
@@ -98,12 +107,34 @@ export const getVehicleIncidentColumns = ({
             <DropdownMenuItem asChild>
               <Link href={`/vehicle-incident/${incident.id}`}>Detail</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild hidden={status !== "open"}>
               <Link href={`/vehicle-incident/${incident.id}/edit`}>Update</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              hidden={status !== "open"}
+              disabled={isProgressing}
+              onClick={() => onProgress(incident)}
+            >
+              {isProgressing ? "Processing..." : "Progress"}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              hidden={status !== "in_progress"}
+              disabled={isResolving}
+              onClick={() => onResolve(incident)}
+            >
+              {isResolving ? "Resolving..." : "Resolved"}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              hidden={status !== "open"}
+              disabled={isClosing}
+              onClick={() => onClose(incident)}
+            >
+              {isClosing ? "Closing..." : "Closed"}
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
               disabled={isDeleting}
+              hidden={status !== "open"}
               onClick={() => onDelete(incident)}
             >
               {isDeleting ? "Deleting..." : "Delete"}

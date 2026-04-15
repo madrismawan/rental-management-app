@@ -43,6 +43,24 @@ export const vehicleIncidentAPI = {
     );
   },
 
+  progress: async (id: number) => {
+    return await apiClient.patch<VehicleIncident>(
+      `/vehicle-incidents/${id}/progress`,
+    );
+  },
+
+  resolved: async (id: number) => {
+    return await apiClient.patch<VehicleIncident>(
+      `/vehicle-incidents/${id}/resolved`,
+    );
+  },
+
+  closed: async (id: number) => {
+    return await apiClient.patch<VehicleIncident>(
+      `/vehicle-incidents/${id}/closed`,
+    );
+  },
+
   remove: async (id: number) => {
     return await apiClient.delete<{ success: boolean }>(
       `/vehicle-incidents/${id}`,
