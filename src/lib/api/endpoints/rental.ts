@@ -1,4 +1,8 @@
-import { CreateRentalInput, UpdateRentalInput } from "@/lib/schema/rental";
+import {
+  CompleteRentalInput,
+  CreateRentalInput,
+  UpdateRentalInput,
+} from "@/lib/schema/rental";
 import { apiClient } from "../client";
 import { Rental } from "../resource/rental";
 
@@ -40,5 +44,12 @@ export const rentalAPI = {
   },
   cancel: async (id: number) => {
     return await apiClient.patch<{ success: boolean }>(`/rentals/${id}/cancel`);
+  },
+
+  complete: async (id: number, input: CompleteRentalInput) => {
+    return await apiClient.patch<{ success: boolean }>(
+      `/rentals/${id}/complete`,
+      input,
+    );
   },
 };

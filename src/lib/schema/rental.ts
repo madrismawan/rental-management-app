@@ -47,6 +47,22 @@ export const createRentalSchema = rentalSchema.pick({
 
 export const updateRentalSchema = createRentalSchema.partial();
 
+export const completeRentalSchema = z.object({
+  returnDate: z.coerce.date(),
+  penaltyFee: z
+    .number()
+    .nonnegative("Penalty fee cannot be negative")
+    .optional(),
+  incidentType: z.string().optional(),
+  description: z.string().optional(),
+  vehicleConditionEnd: z.string().optional(),
+  mileageEnd: z
+    .number()
+    .nonnegative("Mileage end cannot be negative")
+    .optional(),
+});
+
 export type Rental = z.infer<typeof rentalSchema>;
 export type CreateRentalInput = z.infer<typeof createRentalSchema>;
 export type UpdateRentalInput = z.infer<typeof updateRentalSchema>;
+export type CompleteRentalInput = z.infer<typeof completeRentalSchema>;

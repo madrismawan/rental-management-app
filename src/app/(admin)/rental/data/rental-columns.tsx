@@ -15,12 +15,16 @@ import { formatDate } from "@/lib/date";
 
 interface RentalColumnOptions {
   onCancel: (rental: Rental) => void;
+  onComplete: (rental: Rental) => void;
   cancelingId?: number | null;
+  completingId?: number | null;
 }
 
 export const getRentalColumns = ({
   onCancel,
+  onComplete,
   cancelingId,
+  completingId,
 }: RentalColumnOptions): ColumnDef<Rental>[] => [
   {
     accessorKey: "customerName",
@@ -80,6 +84,7 @@ export const getRentalColumns = ({
       const rental = row.original;
       const status = row.original.status.toLowerCase();
       const isCancelling = cancelingId === rental.id;
+      const isCompleting = completingId === rental.id;
 
       return (
         <DropdownMenu>
@@ -104,6 +109,13 @@ export const getRentalColumns = ({
               onClick={() => onCancel(rental)}
             >
               {isCancelling ? "Cancelling..." : "Cancel"}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={isCompleting}
+              hidden={status === "completed" || status === "cancelled"}
+              onClick={() => onComplete(rental)}
+            >
+              {isCompleting ? "Completing..." : "Completed"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
