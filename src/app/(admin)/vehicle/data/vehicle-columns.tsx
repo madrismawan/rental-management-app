@@ -103,7 +103,7 @@ export const getVehicleColumns = ({
               disabled={isDeleting}
               onClick={() => onCancel(vehicle)}
             >
-              {isDeleting ? "Cancelling..." : "Cancel"}
+              {isDeleting ? "Deleting..." : "Delete"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

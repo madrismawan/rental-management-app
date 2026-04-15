@@ -18,6 +18,7 @@ interface VehicleIncidentColumnOptions {
   onProgress: (incident: VehicleIncident) => void;
   onResolve: (incident: VehicleIncident) => void;
   onClose: (incident: VehicleIncident) => void;
+  onBanend: (incident: VehicleIncident) => void;
 }
 
 export const getVehicleIncidentColumns = ({
@@ -25,6 +26,7 @@ export const getVehicleIncidentColumns = ({
   onProgress,
   onResolve,
   onClose,
+  onBanend,
 }: VehicleIncidentColumnOptions): ColumnDef<VehicleIncident>[] => [
   {
     accessorKey: "vehicleName",
@@ -139,6 +141,12 @@ export const getVehicleIncidentColumns = ({
               onClick={() => onClose(incident)}
             >
               Closed
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              hidden={!incident.customerId}
+              onClick={() => onBanend(incident)}
+            >
+              Banend
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"

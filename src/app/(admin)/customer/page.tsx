@@ -1,7 +1,9 @@
 "use client";
 
 import { DataTable } from "@/components/common/data-table";
+import { BanendCustomerModal } from "@/components/common/banend-customer-modal";
 import { customerAPI } from "@/lib/api/endpoints/customer";
+import { customerLogAPI } from "@/lib/api/endpoints/customer-log";
 import { Customer } from "@/lib/api/resource/customer";
 import { useEffect, useState } from "react";
 import { getCustomerColumns } from "./data/customer-columns";
@@ -15,6 +17,10 @@ export default function CustomerPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [isBanendModalOpen, setIsBanendModalOpen] = useState(false);
+  const [selectedBanendCustomer, setSelectedBanendCustomer] =
+    useState<Customer | null>(null);
+  const [submittingBanend, setSubmittingBanend] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -82,8 +88,38 @@ export default function CustomerPage() {
     });
   };
 
+  const handleOpenBanendModal = (customer: Customer) => {
+    setSelectedBanendCustomer(customer);
+    setIsBanendModalOpen(true);
+  };
+
+  const handleSubmitBanend = async (reason: string) => {
+    if (!selectedBanendCustomer?.id) {
+      error("Customer ID is required to create banend log");
+      return;
+    }
+
+    setSubmittingBanend(true);
+    const res = await customerLogAPI.create({
+      customerId: selectedBanendCustomer.id,
+      reason,
+      status: "banend",
+    });
+
+    if (res.success) {
+      success("Banend log created successfully");
+      setIsBanendModalOpen(false);
+      setSelectedBanendCustomer(null);
+    } else {
+      error(res.error?.message ?? "Failed to create banend log");
+    }
+
+    setSubmittingBanend(false);
+  };
+
   const columns = getCustomerColumns({
     onDelete: handleDelete,
+    onBanend: handleOpenBanendModal,
     deletingId,
   });
 
@@ -104,6 +140,18 @@ export default function CustomerPage() {
         onPaginationChange={setPagination}
       />
       {loading && <p className="text-sm text-muted-foreground">Loading...</p>}
+
+      <BanendCustomerModal
+        open={isBanendModalOpen}
+        onOpenChange={(open) => {
+          setIsBanendModalOpen(open);
+          if (!open) {
+            setSelectedBanendCustomer(null);
+          }
+        }}
+        onSubmit={handleSubmitBanend}
+        submitting={submittingBanend}
+      />
     </section>
   );
 }

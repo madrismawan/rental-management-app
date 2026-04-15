@@ -10,12 +10,26 @@ type CustomerQuery = {
   limit?: number;
 };
 
+type CustomerOptionQuery = {
+  status?: string;
+};
+
 const toQueryString = (query?: CustomerQuery) => {
   if (!query) return "";
 
   const params = new URLSearchParams();
   if (query.page !== undefined) params.set("page", String(query.page));
   if (query.limit !== undefined) params.set("limit", String(query.limit));
+
+  const parsed = params.toString();
+  return parsed ? `?${parsed}` : "";
+};
+
+const toOptionQueryString = (query?: CustomerOptionQuery) => {
+  if (!query) return "";
+
+  const params = new URLSearchParams();
+  if (query.status) params.set("status", query.status);
 
   const parsed = params.toString();
   return parsed ? `?${parsed}` : "";
@@ -42,9 +56,9 @@ export const customerAPI = {
     return await apiClient.delete<{ success: boolean }>(`/customers/${id}`);
   },
 
-  options: async () => {
+  options: async (query?: CustomerOptionQuery) => {
     return await apiClient.get<{ id: string; name: string }[]>(
-      "/customers/options",
+      `/customers/options${toOptionQueryString(query)}`,
     );
   },
 };

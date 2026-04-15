@@ -39,13 +39,11 @@ export function LoginForm({
           success("Logged in successfully");
           router.push("/rental");
         } else {
-          console.error("Login error:", response);
           throw response?.error || "Login failed";
         }
         /* eslint-disable @typescript-eslint/no-explicit-any */
-      } catch (error: any) {
-        console.error("Login error:", error);
-        ErrorToast(error || "Login failed");
+      } catch (err: any) {
+        ErrorToast("Password or email is incorrect");
       }
     },
   });

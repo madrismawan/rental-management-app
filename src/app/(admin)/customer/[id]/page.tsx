@@ -1,25 +1,26 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/common/data-table";
 import { customerAPI } from "@/lib/api/endpoints/customer";
+import { customerLogAPI } from "@/lib/api/endpoints/customer-log";
 import { Customer } from "@/lib/api/resource/customer";
+import { CustomerLog } from "@/lib/api/resource/customer-log";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-const formatDate = (value: string) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "-";
-  return date.toLocaleString();
-};
+import { formatDate } from "@/lib/date";
+import { customerLogColumns } from "../data/customer-log-column";
 
 export default function CustomerDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
 
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [customerLogs, setCustomerLogs] = useState<CustomerLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [logLoading, setLogLoading] = useState(true);
 
   useEffect(() => {
     const fetchCustomer = async () => {
@@ -31,6 +32,21 @@ export default function CustomerDetailPage() {
     };
 
     fetchCustomer();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchCustomerLogs = async () => {
+      setLogLoading(true);
+      const res = await customerLogAPI.getAll({ customerId: id });
+      if (res.success && res.data) {
+        setCustomerLogs(res.data);
+      } else {
+        setCustomerLogs([]);
+      }
+      setLogLoading(false);
+    };
+
+    fetchCustomerLogs();
   }, [id]);
 
   if (loading) {
@@ -111,6 +127,27 @@ export default function CustomerDetailPage() {
             )}
           </p>
         </div>
+      </div>
+
+      <div className="grid gap-3 rounded-lg border p-4">
+        <div>
+          <p className="font-semibold">Customer Log</p>
+          <p className="text-sm text-muted-foreground">
+            List of customer log entries for this customer.
+          </p>
+        </div>
+
+        <DataTable
+          columns={customerLogColumns}
+          data={customerLogs}
+          filterSearchKey={["id", "status", "reason"]}
+        />
+
+        {logLoading && (
+          <p className="text-sm text-muted-foreground">
+            Loading customer logs...
+          </p>
+        )}
       </div>
     </section>
   );

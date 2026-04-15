@@ -16,11 +16,13 @@ import { formatDate } from "@/lib/date";
 
 interface CustomerColumnOptions {
   onDelete: (customer: Customer) => void;
+  onBanend: (customer: Customer) => void;
   deletingId?: string | null;
 }
 
 export const getCustomerColumns = ({
   onDelete,
+  onBanend,
   deletingId,
 }: CustomerColumnOptions): ColumnDef<Customer>[] => [
   {
@@ -91,6 +93,12 @@ export const getCustomerColumns = ({
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href={`/customer/${customer.id}/edit`}>Update</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              hidden={customer.status.toLowerCase() === "banned"}
+              onClick={() => onBanend(customer)}
+            >
+              Banend
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"

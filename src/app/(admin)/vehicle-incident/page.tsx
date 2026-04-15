@@ -1,6 +1,8 @@
 "use client";
 
 import { DataTable } from "@/components/common/data-table";
+import { BanendCustomerModal } from "@/components/common/banend-customer-modal";
+import { customerLogAPI } from "@/lib/api/endpoints/customer-log";
 import { vehicleIncidentAPI } from "@/lib/api/endpoints/vehicle-incident";
 import { VehicleIncident } from "@/lib/api/resource/vehicle-incident";
 import { useEffect, useState } from "react";
@@ -14,6 +16,10 @@ import { modalConfirmation } from "@/components/common/modal-confirmation";
 export default function VehicleIncidentPage() {
   const [incidents, setIncidents] = useState<VehicleIncident[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isBanendModalOpen, setIsBanendModalOpen] = useState(false);
+  const [selectedBanendIncident, setSelectedBanendIncident] =
+    useState<VehicleIncident | null>(null);
+  const [submittingBanend, setSubmittingBanend] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -138,11 +144,46 @@ export default function VehicleIncidentPage() {
     }
   };
 
+  const handleOpenBanendModal = (incident: VehicleIncident) => {
+    if (!incident.customerId) {
+      error("Customer ID is required to create banend log");
+      return;
+    }
+
+    setSelectedBanendIncident(incident);
+    setIsBanendModalOpen(true);
+  };
+
+  const handleSubmitBanend = async (reason: string) => {
+    if (!selectedBanendIncident?.customerId) {
+      error("Customer ID is required to create banend log");
+      return;
+    }
+
+    setSubmittingBanend(true);
+    const res = await customerLogAPI.create({
+      customerId: selectedBanendIncident.customerId,
+      reason,
+      status: "banend",
+    });
+
+    if (res.success) {
+      success("Banend log created successfully");
+      setIsBanendModalOpen(false);
+      setSelectedBanendIncident(null);
+    } else {
+      error(res.error?.message ?? "Failed to create banend log");
+    }
+
+    setSubmittingBanend(false);
+  };
+
   const columns = getVehicleIncidentColumns({
     onDelete: handleDelete,
     onProgress: handleProgress,
     onResolve: handleResolve,
     onClose: handleClose,
+    onBanend: handleOpenBanendModal,
   });
 
   return (
@@ -162,6 +203,18 @@ export default function VehicleIncidentPage() {
         onPaginationChange={setPagination}
       />
       {loading && <p className="text-sm text-muted-foreground">Loading...</p>}
+
+      <BanendCustomerModal
+        open={isBanendModalOpen}
+        onOpenChange={(open) => {
+          setIsBanendModalOpen(open);
+          if (!open) {
+            setSelectedBanendIncident(null);
+          }
+        }}
+        onSubmit={handleSubmitBanend}
+        submitting={submittingBanend}
+      />
     </section>
   );
 }

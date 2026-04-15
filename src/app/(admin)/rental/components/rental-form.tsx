@@ -114,7 +114,7 @@ export function RentalForm({ mode, rentalId, initialValues }: RentalFormProps) {
 
   useEffect(() => {
     const fetchCustomerOptions = async () => {
-      const res = await customerAPI.options();
+      const res = await customerAPI.options({ status: "active" });
       if (res.success && res.data) {
         const mappedOptions = res.data.map((item) => ({
           label: item.name,
