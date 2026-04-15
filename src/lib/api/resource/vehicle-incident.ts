@@ -2,6 +2,8 @@ export interface VehicleIncident {
   id: number;
   vehicleId: number;
   vehicleName: string;
+  customerName: string;
+  rentalNoInvoice: string;
   customerId?: number;
   rentalId?: number;
   incidentDate: Date;

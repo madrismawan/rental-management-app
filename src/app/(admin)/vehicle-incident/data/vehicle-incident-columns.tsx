@@ -31,6 +31,30 @@ export const getVehicleIncidentColumns = ({
     header: "Vehicle",
   },
   {
+    accessorKey: "customerName",
+    header: "Customer Name",
+    cell: ({ row }) => {
+      const value = row.original.customerName;
+      return value && String(value).trim() !== "" ? (
+        value
+      ) : (
+        <span className="text-muted-foreground">No data</span>
+      );
+    },
+  },
+  {
+    accessorKey: "rentalNoInvoice",
+    header: "Rental NO",
+    cell: ({ row }) => {
+      const value = row.original.rentalNoInvoice;
+      return value && String(value).trim() !== "" ? (
+        value
+      ) : (
+        <span className="text-muted-foreground">No data</span>
+      );
+    },
+  },
+  {
     accessorKey: "incidentType",
     header: "Incident Type",
   },
@@ -111,7 +135,7 @@ export const getVehicleIncidentColumns = ({
               Resolved
             </DropdownMenuItem>
             <DropdownMenuItem
-              hidden={status !== "resolved"}
+              hidden={status !== "open"}
               onClick={() => onClose(incident)}
             >
               Closed
